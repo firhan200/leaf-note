@@ -19,6 +19,10 @@ public class NoteRepository {
         return noteDao.getAll();
     }
 
+    public Note getNoteById(long id){
+        return noteDao.getNoteById(id);
+    }
+
     public long createNote(Note note){
         return noteDao.insert(note);
     }

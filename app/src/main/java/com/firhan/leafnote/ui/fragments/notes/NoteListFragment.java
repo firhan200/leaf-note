@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,7 +18,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.firhan.leafnote.R;
+import com.firhan.leafnote.interfaces.INoteListClickListener;
+import com.firhan.leafnote.interfaces.INoteNavigation;
 import com.firhan.leafnote.rooms.entities.Note;
+import com.firhan.leafnote.ui.activities.NoteActivity;
 import com.firhan.leafnote.ui.adapters.NotesRecyclerViewAdapter;
 import com.firhan.leafnote.viewmodels.NotesViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -30,7 +35,7 @@ import dagger.android.support.DaggerFragment;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NoteListFragment extends DaggerFragment {
+public class NoteListFragment extends DaggerFragment implements INoteListClickListener {
     private static final String TAG = "NoteListFragment";
 
     //vars
@@ -38,6 +43,9 @@ public class NoteListFragment extends DaggerFragment {
     NotesRecyclerViewAdapter adapter;
     RecyclerView.LayoutManager layoutManager;
     FloatingActionButton floatingActionButton;
+
+    //nav controller
+    INoteNavigation noteNavigation;
 
     //inject view model
     @Inject
@@ -59,6 +67,9 @@ public class NoteListFragment extends DaggerFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        //init navigation interface
+        noteNavigation = (NoteActivity) getContext();
+
         //init ids
         initIds(view);
 
@@ -69,7 +80,8 @@ public class NoteListFragment extends DaggerFragment {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                notesViewModel.addNote(new Note("bank account number", "secret password here"));
+                //go to add note fragment
+                noteNavigation.navigateFragment(R.id.action_noteListFragment_to_addNoteFragment, null);
             }
         });
 
@@ -90,11 +102,23 @@ public class NoteListFragment extends DaggerFragment {
 
     private void initRecyclerView(){
         //set adapter
-        adapter = new NotesRecyclerViewAdapter(notesViewModel.getNotes().getValue());
+        adapter = new NotesRecyclerViewAdapter(notesViewModel.getNotes().getValue(), this);
         notesRecyclerView.setAdapter(adapter);
 
         //set layout
         layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         notesRecyclerView.setLayoutManager(layoutManager);
+    }
+
+    @Override
+    public void onNoteClick(int position) {
+        //get note id
+        int noteId = notesViewModel.getNotes().getValue().get(position).getId();
+
+        //set bundle
+        Bundle bundle = new Bundle();
+        bundle.putInt("noteId", noteId);
+        //go to note detail
+        noteNavigation.navigateFragment(R.id.action_noteListFragment_to_editNoteFragment, bundle);
     }
 }

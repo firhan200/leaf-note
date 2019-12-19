@@ -27,7 +27,7 @@ public class NotesViewModel extends ViewModel {
 
         if(notes == null){
             notes = new MutableLiveData<>();
-            notes.setValue(new ArrayList<Note>());
+            notes.setValue(noteRepository.getAll());
         }
     }
 
@@ -36,11 +36,21 @@ public class NotesViewModel extends ViewModel {
 
         if(lastInsertedId > 0){
             //success, set new val
-            notes.getValue().add(note);
-            notes.setValue(notes.getValue());
+            notes.postValue(noteRepository.getAll());
         }
 
         return lastInsertedId;
+    }
+
+    public void updateNote(Note note){
+        noteRepository.editNote(note);
+
+        //update live data
+        notes.postValue(noteRepository.getAll());
+    }
+
+    public Note getNote(long id){
+        return noteRepository.getNoteById(id);
     }
 
     public LiveData<List<Note>> getNotes(){

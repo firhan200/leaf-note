@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/noteListFragment"
         android:name="com.firhan.leafnote.ui.fragments.notes.NoteListFragment"
-        android:label="fragment_note_list"
+        android:label="Leaf Note"
         tools:layout="@layout/fragment_note_list" >
         <action
             android:id="@+id/action_noteListFragment_to_noteDetailFragment"
@@ -23,7 +23,7 @@
     <fragment
         android:id="@+id/noteDetailFragment"
         android:name="com.firhan.leafnote.ui.fragments.notes.NoteDetailFragment"
-        android:label="fragment_note_detail"
+        android:label="Detail"
         tools:layout="@layout/fragment_note_detail" >
         <action
             android:id="@+id/action_noteDetailFragment_to_editNoteFragment"
@@ -32,11 +32,11 @@
     <fragment
         android:id="@+id/addNoteFragment"
         android:name="com.firhan.leafnote.ui.fragments.notes.AddNoteFragment"
-        android:label="fragment_add_note"
+        android:label="Create Note"
         tools:layout="@layout/fragment_add_note" />
     <fragment
         android:id="@+id/editNoteFragment"
         android:name="com.firhan.leafnote.ui.fragments.notes.EditNoteFragment"
-        android:label="fragment_edit_note"
+        android:label="Edit Note"
         tools:layout="@layout/fragment_edit_note" />
 </navigation>

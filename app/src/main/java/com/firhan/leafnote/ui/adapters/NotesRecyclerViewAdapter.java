@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firhan.leafnote.R;
+import com.firhan.leafnote.interfaces.INoteListClickListener;
 import com.firhan.leafnote.rooms.entities.Note;
 
 import org.w3c.dom.Text;
@@ -16,10 +17,12 @@ import org.w3c.dom.Text;
 import java.util.List;
 
 public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<NotesRecyclerViewAdapter.ViewHolder> {
-    List<Note> notes;
+    private List<Note> notes;
+    private INoteListClickListener noteListClickListener;
 
-    public NotesRecyclerViewAdapter(List<Note> notes) {
+    public NotesRecyclerViewAdapter(List<Note> notes, INoteListClickListener noteListClickListener) {
         this.notes = notes;
+        this.noteListClickListener = noteListClickListener;
     }
 
     @NonNull
@@ -28,7 +31,7 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<NotesRecycler
         //inflate view
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_note, parent, false);
 
-        return new ViewHolder(view);
+        return new ViewHolder(view, noteListClickListener);
     }
 
     @Override
@@ -46,15 +49,27 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<NotesRecycler
         return notes.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         //vars
         TextView listItemTitle, listItemBody;
+        //interface
+        INoteListClickListener noteListClickListener;
 
-        public ViewHolder(@NonNull View itemView) {
+        ViewHolder(@NonNull View itemView, INoteListClickListener noteListClickListener) {
             super(itemView);
+
+            //init note click
+            this.noteListClickListener = noteListClickListener;
 
             listItemTitle = itemView.findViewById(R.id.list_item_title);
             listItemBody = itemView.findViewById(R.id.list_item_body);
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            noteListClickListener.onNoteClick(getAdapterPosition());
         }
     }
 }

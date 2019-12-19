@@ -15,6 +15,9 @@ public interface NoteDao {
     @Query("SELECT * FROM notes")
     List<Note> getAll();
 
+    @Query("SELECT * FROM notes WHERE id=:id")
+    Note getNoteById(long id);
+
     @Insert
     long insert(Note note);
 
