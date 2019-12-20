@@ -53,10 +53,7 @@ public class NotesViewModel extends ViewModel {
     }
 
     //set select note, after long press on note list
-    public void selectNote(int position){
-        List<Note> newList = getNotes().getValue();
-        //get note
-        Note note = newList.get(position);
+    public void selectNote(Note note){
         //check if already selected
         if(note.getSelected()){
             note.setSelected(false);
@@ -69,11 +66,6 @@ public class NotesViewModel extends ViewModel {
             //add to selected notes live data
             addNoteToSelectedNotes(note);
         }
-
-        //set new data
-        newList.set(position, note);
-        //update lice data
-        notes.postValue(newList);
     }
 
     //update note data

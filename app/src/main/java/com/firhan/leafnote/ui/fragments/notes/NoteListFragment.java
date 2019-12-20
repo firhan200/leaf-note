@@ -5,10 +5,12 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.firhan.leafnote.R;
@@ -45,6 +48,7 @@ public class NoteListFragment extends DaggerFragment implements INoteListClickLi
     NotesRecyclerViewAdapter adapter;
     RecyclerView.LayoutManager layoutManager;
     FloatingActionButton floatingActionButton;
+    LinearLayout createFirstNoteHint;
 
     //nav controller
     INoteNavigation noteNavigation;
@@ -87,21 +91,36 @@ public class NoteListFragment extends DaggerFragment implements INoteListClickLi
             }
         });
 
+        createFirstNoteHint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //go to add note fragment
+                noteNavigation.navigateFragment(R.id.action_noteListFragment_to_addNoteFragment, null);
+            }
+        });
+
         //set observer to notes
         notesViewModel.getNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(List<Note> notes) {
             adapter.notifyDataSetChanged();
 
-            checkActionMenuBarVisibility(notes);
+            //check notes
+            if(notes.size() < 1){
+                //no notes exist, show hint
+                createFirstNoteHint.setVisibility(View.VISIBLE);
+            }else{
+                //hide hint
+                createFirstNoteHint.setVisibility(View.GONE);
+            }
             }
         });
 
-        //set observer to selected note
         notesViewModel.getSelectedNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(List<Note> notes) {
-
+                Log.e(TAG, "onChanged: selected notes "+ notes.size());
+                checkActionMenuBarVisibility(notes);
             }
         });
     }
@@ -109,6 +128,7 @@ public class NoteListFragment extends DaggerFragment implements INoteListClickLi
     private void initIds(View view){
         notesRecyclerView = view.findViewById(R.id.notes_recycler_view);
         floatingActionButton = view.findViewById(R.id.add_note_btn);
+        createFirstNoteHint = view.findViewById(R.id.create_first_note_hint);
     }
 
     private void initRecyclerView(){
@@ -119,6 +139,10 @@ public class NoteListFragment extends DaggerFragment implements INoteListClickLi
         //set layout
         layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         notesRecyclerView.setLayoutManager(layoutManager);
+
+        //set decoration
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+        notesRecyclerView.addItemDecoration(itemDecoration);
     }
 
     @Override
@@ -140,8 +164,17 @@ public class NoteListFragment extends DaggerFragment implements INoteListClickLi
 
     @Override
     public void onNoteLongPress(int position) {
-        //update live data to show style
-        notesViewModel.selectNote(position);
+        //get note and update selected
+        Note note = notesViewModel.getNotes().getValue().get(position);
+
+        //add or remove from selected notes live data
+        notesViewModel.selectNote(note);
+
+        //toggle selected value
+        note.setSelected(note.getSelected());
+
+        //update adapter
+        adapter.notifyItemChanged(position, note);
     }
 
     private void checkActionMenuBarVisibility(List<Note> notes){
@@ -163,7 +196,10 @@ public class NoteListFragment extends DaggerFragment implements INoteListClickLi
             totalSelected = totalSelected + " items";
             noteNavigation.setPageTitle(totalSelected);
         }else{
-            noteNavigation.setPageTitle("Leaf Note");
+            //set back to app name
+            String pageTitleText = getResources().getString(R.string.app_name);
+            pageTitleText = getResources().getString(R.string.app_name) + " (" + notesViewModel.getNotes().getValue().size() + ")";
+            noteNavigation.setPageTitle(pageTitleText);
         }
 
         //show action menu bar

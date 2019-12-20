@@ -70,13 +70,6 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
         //set on destination change
         navController.addOnDestinationChangedListener(this);
 
-        notesViewModel.getSelectedNote().observe(this, new Observer<Note>() {
-            @Override
-            public void onChanged(Note note) {
-                Log.e(TAG, "onChanged: " + "selected note");
-            }
-        });
-
         editSelectedNoteIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -125,7 +118,14 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
 
     @Override
     public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
-        pageTitle.setText(destination.getLabel());
+        String pageTitleText = destination.getLabel().toString();
+
+        //check if on list
+        if(destination.getId() == R.id.noteListFragment){
+            pageTitleText = pageTitleText + "(" + notesViewModel.getNotes().getValue().size()  + ")";
+        }
+
+        pageTitle.setText(pageTitleText);
 
         //hide clear icon
         deleteSelectedNoteIcon.setVisibility(View.GONE);

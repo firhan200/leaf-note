@@ -1,14 +1,19 @@
 package com.firhan.leafnote.ui.adapters;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -51,10 +56,76 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<NotesRecycler
 
         //set bg
         if(note.getSelected()){
-            holder.listItemNoteContainer.setBackgroundColor(ContextCompat.getColor(this.context, R.color.listItemSelected));
+            holder.listItemNoteContainer.setBackgroundColor(ContextCompat.getColor(this.context, R.color.colorPrimary));
+            holder.listItemTitle.setTextColor(Color.WHITE);
+            holder.listItemBody.setTextColor(Color.WHITE);
+
+            animateSelected(holder);
         }else{
             holder.listItemNoteContainer.setBackgroundColor(ContextCompat.getColor(this.context, R.color.listItemUnselected));
+            holder.listItemTitle.setTextColor(ContextCompat.getColor(this.context, R.color.noteListItemTitle));
+            holder.listItemBody.setTextColor(ContextCompat.getColor(this.context, R.color.noteListItemBody));
+
+            animateUnselected(holder);
         }
+    }
+
+    private void animateSelected(ViewHolder holder){
+        long duration = 150;
+        float margin = 125;
+        ObjectAnimator content = ObjectAnimator.ofFloat(holder.listItemNoteContentContainer, "translationX", 0f, margin).setDuration(duration);
+        ObjectAnimator checkIconX = ObjectAnimator.ofFloat(
+                holder.listItemNoteCheckIcon,
+                "scaleX",
+                0f,
+                1f
+        ).setDuration(duration);
+        ObjectAnimator checkIconY = ObjectAnimator.ofFloat(
+                holder.listItemNoteCheckIcon,
+                "scaleY",
+                0f,
+                1f
+        ).setDuration(duration);
+        ObjectAnimator rotateIcon = ObjectAnimator.ofFloat(
+                holder.listItemNoteCheckIcon,
+                "rotation",
+                0f,
+                360f
+        ).setDuration(duration);
+
+        //animate together
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(content, checkIconX, checkIconY, rotateIcon);
+        animatorSet.start();
+    }
+
+    private void animateUnselected(ViewHolder holder){
+        long duration = 150;
+        float margin = 125;
+        ObjectAnimator content = ObjectAnimator.ofFloat(holder.listItemNoteContentContainer, "translationX", margin, 0f).setDuration(duration);
+        ObjectAnimator checkIconX = ObjectAnimator.ofFloat(
+                holder.listItemNoteCheckIcon,
+                "scaleX",
+                1f,
+                0.5f
+        ).setDuration(duration);
+        ObjectAnimator checkIconY = ObjectAnimator.ofFloat(
+                holder.listItemNoteCheckIcon,
+                "scaleY",
+                1f,
+                0.5f
+        ).setDuration(duration);
+        ObjectAnimator rotateIcon = ObjectAnimator.ofFloat(
+                holder.listItemNoteCheckIcon,
+                "rotation",
+                360f,
+                0f
+        ).setDuration(duration);
+
+        //animate together
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(content, checkIconX, checkIconY, rotateIcon);
+        animatorSet.start();
     }
 
     @Override
@@ -65,7 +136,9 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<NotesRecycler
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         //vars
         TextView listItemTitle, listItemBody;
-        LinearLayout listItemNoteContainer;
+        ConstraintLayout listItemNoteContainer;
+        LinearLayout listItemNoteContentContainer;
+        ImageView listItemNoteCheckIcon;
         //interface
         INoteListClickListener noteListClickListener;
 
@@ -78,6 +151,8 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<NotesRecycler
             listItemTitle = itemView.findViewById(R.id.list_item_title);
             listItemBody = itemView.findViewById(R.id.list_item_body);
             listItemNoteContainer = itemView.findViewById(R.id.list_item_note_container);
+            listItemNoteContentContainer = itemView.findViewById(R.id.list_item_note_content_container);
+            listItemNoteCheckIcon = itemView.findViewById(R.id.list_item_note_check_icon);
 
             //on click
             itemView.setOnClickListener(this);
