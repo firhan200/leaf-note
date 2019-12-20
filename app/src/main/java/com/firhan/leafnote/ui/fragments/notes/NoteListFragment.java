@@ -16,8 +16,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.firhan.leafnote.R;
+import com.firhan.leafnote.helpers.KeyboardHelper;
 import com.firhan.leafnote.interfaces.INoteListClickListener;
 import com.firhan.leafnote.interfaces.INoteNavigation;
 import com.firhan.leafnote.rooms.entities.Note;
@@ -64,6 +66,13 @@ public class NoteListFragment extends DaggerFragment implements INoteListClickLi
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        KeyboardHelper.hideSoftKeyboard(getActivity());
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -89,8 +98,9 @@ public class NoteListFragment extends DaggerFragment implements INoteListClickLi
         notesViewModel.getNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(List<Note> notes) {
-                Log.e(TAG, "onChanged: notes");
-                adapter.notifyDataSetChanged();
+            adapter.notifyDataSetChanged();
+
+            checkActionMenuBarVisibility(notes);
             }
         });
     }
@@ -102,7 +112,7 @@ public class NoteListFragment extends DaggerFragment implements INoteListClickLi
 
     private void initRecyclerView(){
         //set adapter
-        adapter = new NotesRecyclerViewAdapter(notesViewModel.getNotes().getValue(), this);
+        adapter = new NotesRecyclerViewAdapter(getContext() ,notesViewModel.getNotes().getValue(), this);
         notesRecyclerView.setAdapter(adapter);
 
         //set layout
@@ -119,6 +129,28 @@ public class NoteListFragment extends DaggerFragment implements INoteListClickLi
         Bundle bundle = new Bundle();
         bundle.putInt("noteId", noteId);
         //go to note detail
-        noteNavigation.navigateFragment(R.id.action_noteListFragment_to_editNoteFragment, bundle);
+        noteNavigation.navigateFragment(R.id.action_noteListFragment_to_noteDetailFragment, bundle);
+    }
+
+    @Override
+    public void onNoteLongPress(int position) {
+        //update live data
+        notesViewModel.selectNote(position);
+    }
+
+    private void checkActionMenuBarVisibility(List<Note> notes){
+        //if any selected
+        boolean isAnySelected = false;
+
+        //loop through notes
+        for(Note note : notes){
+            if(note.getSelected()){
+                isAnySelected = true;
+                break;
+            }
+        }
+
+        //show action menu bar
+        noteNavigation.showActionMenuIcon(isAnySelected);
     }
 }

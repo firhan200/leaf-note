@@ -42,6 +42,23 @@ public class NotesViewModel extends ViewModel {
         return lastInsertedId;
     }
 
+    public void selectNote(int position){
+        List<Note> newList = getNotes().getValue();
+        //get note
+        Note note = newList.get(position);
+        //check if already selected
+        if(note.getSelected()){
+            note.setSelected(false);
+        }else{
+            note.setSelected(true);
+        }
+
+        //set new data
+        newList.set(position, note);
+        //update lice data
+        notes.postValue(newList);
+    }
+
     public void updateNote(Note note){
         noteRepository.editNote(note);
 

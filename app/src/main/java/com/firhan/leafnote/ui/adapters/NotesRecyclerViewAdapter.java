@@ -1,11 +1,15 @@
 package com.firhan.leafnote.ui.adapters;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firhan.leafnote.R;
@@ -19,8 +23,10 @@ import java.util.List;
 public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<NotesRecyclerViewAdapter.ViewHolder> {
     private List<Note> notes;
     private INoteListClickListener noteListClickListener;
+    private Context context;
 
-    public NotesRecyclerViewAdapter(List<Note> notes, INoteListClickListener noteListClickListener) {
+    public NotesRecyclerViewAdapter(Context context, List<Note> notes, INoteListClickListener noteListClickListener) {
+        this.context = context;
         this.notes = notes;
         this.noteListClickListener = noteListClickListener;
     }
@@ -42,6 +48,13 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<NotesRecycler
         //show data to layout
         holder.listItemTitle.setText(note.getTitle());
         holder.listItemBody.setText(note.getBody());
+
+        //set bg
+        if(note.getSelected()){
+            holder.listItemNoteContainer.setBackgroundColor(ContextCompat.getColor(this.context, R.color.listItemSelected));
+        }else{
+            holder.listItemNoteContainer.setBackgroundColor(ContextCompat.getColor(this.context, R.color.listItemUnselected));
+        }
     }
 
     @Override
@@ -49,9 +62,10 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<NotesRecycler
         return notes.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         //vars
         TextView listItemTitle, listItemBody;
+        LinearLayout listItemNoteContainer;
         //interface
         INoteListClickListener noteListClickListener;
 
@@ -63,13 +77,25 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<NotesRecycler
 
             listItemTitle = itemView.findViewById(R.id.list_item_title);
             listItemBody = itemView.findViewById(R.id.list_item_body);
+            listItemNoteContainer = itemView.findViewById(R.id.list_item_note_container);
 
+            //on click
             itemView.setOnClickListener(this);
+
+            //long press
+            itemView.setOnLongClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             noteListClickListener.onNoteClick(getAdapterPosition());
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+            noteListClickListener.onNoteLongPress(getAdapterPosition());
+
+            return true;
         }
     }
 }

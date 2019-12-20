@@ -15,7 +15,9 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.firhan.leafnote.R;
+import com.firhan.leafnote.helpers.KeyboardHelper;
 import com.firhan.leafnote.rooms.entities.Note;
+import com.firhan.leafnote.ui.activities.NoteActivity;
 import com.firhan.leafnote.viewmodels.NotesViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -52,6 +54,17 @@ public class AddNoteFragment extends DaggerFragment implements View.OnClickListe
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         //init ids
         initIds(view);
+
+        title.requestFocus();
+
+        //show keyboard
+        KeyboardHelper.showSoftKeyboard(getActivity());
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        KeyboardHelper.showSoftKeyboard(getActivity());
     }
 
     private void initIds(View view){
@@ -78,7 +91,7 @@ public class AddNoteFragment extends DaggerFragment implements View.OnClickListe
             if(insertedId > 0){
                 //success
                 //hide soft keyboard
-                getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+                KeyboardHelper.hideSoftKeyboard(getActivity());
                 //back to list
                 getActivity().onBackPressed();
             }else{

@@ -2,6 +2,7 @@ package com.firhan.leafnote.rooms.entities;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "notes")
@@ -15,9 +16,15 @@ public class Note {
     @ColumnInfo(name = "body")
     private String body;
 
+    @Ignore
+    private Boolean selected;
+
     public Note(String title, String body) {
         this.title = title;
         this.body = body;
+
+        //default selected
+        this.selected = false;
     }
 
     public int getId() {
@@ -42,5 +49,13 @@ public class Note {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public Boolean getSelected() {
+        return selected;
+    }
+
+    public void setSelected(Boolean selected) {
+        this.selected = selected;
     }
 }
