@@ -20,6 +20,8 @@ public class NotesViewModel extends ViewModel {
 
     //vars
     private MutableLiveData<List<Note>> notes;
+    private MutableLiveData<List<Note>> selectedNotes;
+    private MutableLiveData<Note> selectedNote;
 
     @Inject
     public NotesViewModel(NoteRepository noteRepository) {
@@ -28,6 +30,14 @@ public class NotesViewModel extends ViewModel {
         if(notes == null){
             notes = new MutableLiveData<>();
             notes.setValue(noteRepository.getAll());
+
+            //selected note
+            selectedNote = new MutableLiveData<>();
+            selectedNote.setValue(null);
+
+            //selected notes list
+            selectedNotes = new MutableLiveData<>();
+            selectedNotes.setValue(new ArrayList<Note>());
         }
     }
 
@@ -42,6 +52,7 @@ public class NotesViewModel extends ViewModel {
         return lastInsertedId;
     }
 
+    //set select note, after long press on note list
     public void selectNote(int position){
         List<Note> newList = getNotes().getValue();
         //get note
@@ -49,8 +60,14 @@ public class NotesViewModel extends ViewModel {
         //check if already selected
         if(note.getSelected()){
             note.setSelected(false);
+
+            //remove from selected notes live data
+            removeNoteFromSelectedNotes(note);
         }else{
             note.setSelected(true);
+
+            //add to selected notes live data
+            addNoteToSelectedNotes(note);
         }
 
         //set new data
@@ -59,6 +76,7 @@ public class NotesViewModel extends ViewModel {
         notes.postValue(newList);
     }
 
+    //update note data
     public void updateNote(Note note){
         noteRepository.editNote(note);
 
@@ -66,11 +84,41 @@ public class NotesViewModel extends ViewModel {
         notes.postValue(noteRepository.getAll());
     }
 
+    //get note by id
     public Note getNote(long id){
         return noteRepository.getNoteById(id);
     }
 
+    //get all notes
     public LiveData<List<Note>> getNotes(){
         return notes;
+    }
+
+    //get only selected note
+    public LiveData<Note> getSelectedNote(){
+        return selectedNote;
+    }
+
+    //set selected note after click on list
+    public void setSelectedNote(Note note){
+        selectedNote.setValue(note);
+    }
+
+    //add note to selected notes
+    public void addNoteToSelectedNotes(Note note){
+        List<Note> newSelectedNotes = getSelectedNotes().getValue();
+        newSelectedNotes.add(note);
+        selectedNotes.setValue(newSelectedNotes);
+    }
+
+    public void removeNoteFromSelectedNotes(Note note){
+        List<Note> newSelectedNotes = getSelectedNotes().getValue();
+        newSelectedNotes.remove(note);
+        selectedNotes.setValue(newSelectedNotes);
+    }
+
+    //get selected notes
+    public LiveData<List<Note>> getSelectedNotes(){
+        return selectedNotes;
     }
 }

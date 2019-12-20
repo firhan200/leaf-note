@@ -10,12 +10,14 @@
         android:id="@+id/list_item_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Account Number"/>
+        android:maxLines="1"
+        android:ellipsize="end"/>
 
     <TextView
         android:id="@+id/list_item_body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="firebase secret key: secretapikey"/>
+        android:maxLines="1"
+        android:ellipsize="end"/>
 
 </LinearLayout>

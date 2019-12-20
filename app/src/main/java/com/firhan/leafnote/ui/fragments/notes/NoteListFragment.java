@@ -66,13 +66,6 @@ public class NoteListFragment extends DaggerFragment implements INoteListClickLi
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
-        KeyboardHelper.hideSoftKeyboard(getActivity());
-    }
-
-    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -94,13 +87,21 @@ public class NoteListFragment extends DaggerFragment implements INoteListClickLi
             }
         });
 
-        //set observer
+        //set observer to notes
         notesViewModel.getNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(List<Note> notes) {
             adapter.notifyDataSetChanged();
 
             checkActionMenuBarVisibility(notes);
+            }
+        });
+
+        //set observer to selected note
+        notesViewModel.getSelectedNotes().observe(this, new Observer<List<Note>>() {
+            @Override
+            public void onChanged(List<Note> notes) {
+
             }
         });
     }
@@ -122,8 +123,13 @@ public class NoteListFragment extends DaggerFragment implements INoteListClickLi
 
     @Override
     public void onNoteClick(int position) {
+        Note selectedNote = notesViewModel.getNotes().getValue().get(position);
+
+        //set selected note view model
+        notesViewModel.setSelectedNote(selectedNote);
+
         //get note id
-        int noteId = notesViewModel.getNotes().getValue().get(position).getId();
+        int noteId = selectedNote.getId();
 
         //set bundle
         Bundle bundle = new Bundle();
@@ -134,7 +140,7 @@ public class NoteListFragment extends DaggerFragment implements INoteListClickLi
 
     @Override
     public void onNoteLongPress(int position) {
-        //update live data
+        //update live data to show style
         notesViewModel.selectNote(position);
     }
 
@@ -150,7 +156,17 @@ public class NoteListFragment extends DaggerFragment implements INoteListClickLi
             }
         }
 
+        //check if any selected
+        if(isAnySelected){
+            //show total selected
+            String totalSelected = String.valueOf(notesViewModel.getSelectedNotes().getValue().size());
+            totalSelected = totalSelected + " items";
+            noteNavigation.setPageTitle(totalSelected);
+        }else{
+            noteNavigation.setPageTitle("Leaf Note");
+        }
+
         //show action menu bar
-        noteNavigation.showActionMenuIcon(isAnySelected);
+        noteNavigation.showDeleteMenuIcon(isAnySelected);
     }
 }

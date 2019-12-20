@@ -4,5 +4,7 @@ import android.os.Bundle;
 
 public interface INoteNavigation {
     void navigateFragment(int destinationId, Bundle bundle);
-    void showActionMenuIcon(boolean isShow);
+    void showDeleteMenuIcon(boolean isShow);
+    void showEditMenuIcon(boolean isShow);
+    void setPageTitle(String title);
 }
