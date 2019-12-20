@@ -54,17 +54,6 @@ public class AddNoteFragment extends DaggerFragment implements View.OnClickListe
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         //init ids
         initIds(view);
-
-        title.requestFocus();
-
-        //show keyboard
-        KeyboardHelper.showSoftKeyboard(getActivity());
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        KeyboardHelper.showSoftKeyboard(getActivity());
     }
 
     private void initIds(View view){
