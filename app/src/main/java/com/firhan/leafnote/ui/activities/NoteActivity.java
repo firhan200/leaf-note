@@ -64,6 +64,9 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
             @Override
             public void onClick(View v) {
                 notesViewModel.deleteSelectedNotes();
+
+                //show snack bar
+                Snackbar.make(findViewById(android.R.id.content), getResources().getText(R.string.delete_success_label), Snackbar.LENGTH_LONG).show();
             }
         });
 
