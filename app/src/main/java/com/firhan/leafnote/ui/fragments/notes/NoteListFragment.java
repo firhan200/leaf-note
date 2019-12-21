@@ -82,22 +82,8 @@ public class NoteListFragment extends DaggerFragment implements INoteListClickLi
         //init recycler view
         initRecyclerView();
 
-        //set add note btn listener
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //go to add note fragment
-                noteNavigation.navigateFragment(R.id.action_noteListFragment_to_addNoteFragment, null);
-            }
-        });
-
-        createFirstNoteHint.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //go to add note fragment
-                noteNavigation.navigateFragment(R.id.action_noteListFragment_to_addNoteFragment, null);
-            }
-        });
+        //init listeners
+        initListeners();
 
         //set observer to notes
         notesViewModel.getNotes().observe(this, new Observer<List<Note>>() {
@@ -116,11 +102,32 @@ public class NoteListFragment extends DaggerFragment implements INoteListClickLi
             }
         });
 
+        //set observer to selected notes
         notesViewModel.getSelectedNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(List<Note> notes) {
                 Log.e(TAG, "onChanged: selected notes "+ notes.size());
                 checkActionMenuBarVisibility(notes);
+            }
+        });
+    }
+
+    private void initListeners(){
+        //set add note btn listener
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //go to add note fragment
+                noteNavigation.navigateFragment(R.id.action_noteListFragment_to_addNoteFragment, null);
+            }
+        });
+
+        //set click listener to create first note
+        createFirstNoteHint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //go to add note fragment
+                noteNavigation.navigateFragment(R.id.action_noteListFragment_to_addNoteFragment, null);
             }
         });
     }

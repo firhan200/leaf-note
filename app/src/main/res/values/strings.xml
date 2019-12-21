@@ -4,12 +4,14 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-<!--    forms -->
+    <!--    forms -->
     <string name="title_label">Title</string>
     <string name="body_label">Body</string>
-    <string name="create_first_note_label">Create First Note</string>
 
-<!--    butttons -->
+    <string name="create_first_note_label">Create First Note</string>
+    <string name="delete_success_label">Successfully Delete Note</string>
+
+    <!--    butttons -->
     <string name="save_label">Save</string>
     <string name="cancel_label">Cancel</string>
     <string name="create_label">Create</string>

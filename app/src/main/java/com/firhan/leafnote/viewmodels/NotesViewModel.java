@@ -109,6 +109,35 @@ public class NotesViewModel extends ViewModel {
         selectedNotes.setValue(newSelectedNotes);
     }
 
+    public void deleteSelectedNotes(){
+        //init new notes list
+        List<Note> newNotes = getNotes().getValue();
+
+        //deleting
+        if(getSelectedNotes().getValue().size() > 0){
+            for(Note note: getSelectedNotes().getValue()){
+                //remove from database
+                noteRepository.deleteNote(note);
+                //remove from new note list
+                newNotes.remove(note);
+            }
+
+            //update live data
+            notes.setValue(newNotes);
+
+            //clear selected notes live data
+            selectedNotes.setValue(new ArrayList<Note>());
+        }
+    }
+
+    public void deleteSelectedNote(){
+        //remove from database
+        noteRepository.deleteNote(getSelectedNote().getValue());
+
+        //update live data
+        notes.setValue(noteRepository.getAll());
+    }
+
     //get selected notes
     public LiveData<List<Note>> getSelectedNotes(){
         return selectedNotes;

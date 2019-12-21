@@ -35,10 +35,14 @@
                 app:layout_constraintEnd_toStartOf="@id/delete_selected_note_icon"
                 android:textColor="@color/pageTitle"/>
 
+
+
             <ImageView
-                android:id="@+id/delete_selected_note_icon"
+                android:id="@+id/delete_selected_notes_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingStart="10dp"
+                android:paddingLeft="10dp"
                 app:layout_constraintEnd_toStartOf="@id/edit_selected_note_icon"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -48,10 +52,23 @@
                 android:id="@+id/edit_selected_note_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:paddingStart="10dp"
+                android:paddingLeft="10dp"
+                app:layout_constraintEnd_toStartOf="@id/delete_selected_note_icon"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:src="@drawable/ic_create_primary_24dp"/>
+
+            <ImageView
+                android:id="@+id/delete_selected_note_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="10dp"
+                android:paddingLeft="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:src="@drawable/ic_close_primary_24dp"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

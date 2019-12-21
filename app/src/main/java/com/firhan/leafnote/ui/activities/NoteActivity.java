@@ -21,6 +21,7 @@ import com.firhan.leafnote.helpers.KeyboardHelper;
 import com.firhan.leafnote.interfaces.INoteNavigation;
 import com.firhan.leafnote.rooms.entities.Note;
 import com.firhan.leafnote.viewmodels.NotesViewModel;
+import com.google.android.material.snackbar.Snackbar;
 
 import javax.inject.Inject;
 
@@ -32,7 +33,7 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
     //vars
     public NavController navController;
     private TextView pageTitle;
-    private ImageView deleteSelectedNoteIcon, editSelectedNoteIcon;
+    private ImageView deleteSelectedNotesIcon, deleteSelectedNoteIcon, editSelectedNoteIcon;
 
     @Inject
     NotesViewModel notesViewModel;
@@ -42,15 +43,42 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note);
 
+        //init ids
         initIds();
+
+        //init listeners
+        initListeners();
 
         setupNavigation();
     }
 
     private void initIds(){
         pageTitle = findViewById(R.id.page_title);
+        deleteSelectedNotesIcon = findViewById(R.id.delete_selected_notes_icon);
         deleteSelectedNoteIcon = findViewById(R.id.delete_selected_note_icon);
         editSelectedNoteIcon = findViewById(R.id.edit_selected_note_icon);
+    }
+
+    private void initListeners(){
+        deleteSelectedNotesIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                notesViewModel.deleteSelectedNotes();
+            }
+        });
+
+        deleteSelectedNoteIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                notesViewModel.deleteSelectedNote();
+
+                //show snack bar
+                Snackbar.make(findViewById(android.R.id.content), getResources().getText(R.string.delete_success_label), Snackbar.LENGTH_LONG).show();
+
+                //go back
+                onBackPressed();
+            }
+        });
     }
 
     private void setupNavigation(){
@@ -88,9 +116,9 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
     @Override
     public void showDeleteMenuIcon(boolean isShow) {
         if(isShow){
-            deleteSelectedNoteIcon.setVisibility(View.VISIBLE);
+            deleteSelectedNotesIcon.setVisibility(View.VISIBLE);
         }else{
-            deleteSelectedNoteIcon.setVisibility(View.GONE);
+            deleteSelectedNotesIcon.setVisibility(View.GONE);
         }
     }
 
@@ -98,8 +126,10 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
     public void showEditMenuIcon(boolean isShow) {
         if(isShow){
             editSelectedNoteIcon.setVisibility(View.VISIBLE);
+            deleteSelectedNoteIcon.setVisibility(View.VISIBLE);
         }else{
             editSelectedNoteIcon.setVisibility(View.GONE);
+            deleteSelectedNoteIcon.setVisibility(View.GONE);
         }
     }
 
@@ -121,14 +151,16 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
         String pageTitleText = destination.getLabel().toString();
 
         //check if on list
-        if(destination.getId() == R.id.noteListFragment){
+        if(
+                destination.getId() == R.id.noteListFragment
+        ){
             pageTitleText = pageTitleText + "(" + notesViewModel.getNotes().getValue().size()  + ")";
         }
 
         pageTitle.setText(pageTitleText);
 
         //hide clear icon
-        deleteSelectedNoteIcon.setVisibility(View.GONE);
+        showDeleteMenuIcon(false);
 
         if(destination.getId() == R.id.noteDetailFragment){
             //show edit btn
