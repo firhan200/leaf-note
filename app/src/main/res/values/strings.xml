@@ -9,10 +9,20 @@
     <string name="body_label">Body</string>
 
     <string name="create_first_note_label">Create First Note</string>
+    <string name="trash_note_label">Nothing in Trash Can</string>
     <string name="delete_success_label">Successfully Delete Note</string>
+    <string name="edit_success_label">Successfully Edit Note</string>
+    <string name="delete_selected_notes">Delete selected notes?</string>
 
     <!--    butttons -->
     <string name="save_label">Save</string>
     <string name="cancel_label">Cancel</string>
     <string name="create_label">Create</string>
+
+    <!--    menu -->
+    <string name="menu_notes">Notes</string>
+    <string name="menu_add_note">Add</string>
+    <string name="menu_trash_can">Trash</string>
+    <string name="menu_search">Search</string>
+    <string name="menu_setting">Setting</string>
 </resources>

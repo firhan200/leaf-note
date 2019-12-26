@@ -4,6 +4,10 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#00574B</color>
 
+    <color name="light_gray">#D5DBDB</color>
+    <color name="medium_gray">#BFC9CA</color>
+    <color name="dark_gray">#99A3A4</color>
+
     <color name="pageTitle">#161414</color>
 
     <!--list item bg -->

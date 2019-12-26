@@ -16,6 +16,9 @@ public class Note {
     @ColumnInfo(name = "body")
     private String body;
 
+    @ColumnInfo(name = "is_deleted")
+    private Boolean isDeleted;
+
     @Ignore
     private Boolean selected;
 
@@ -25,6 +28,7 @@ public class Note {
 
         //default selected
         this.selected = false;
+        this.isDeleted = false;
     }
 
     public int getId() {
@@ -57,5 +61,13 @@ public class Note {
 
     public void setSelected(Boolean selected) {
         this.selected = selected;
+    }
+
+    public Boolean getDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        isDeleted = deleted;
     }
 }

@@ -12,8 +12,11 @@ import java.util.List;
 
 @Dao
 public interface NoteDao {
-    @Query("SELECT * FROM notes ORDER BY id DESC")
+    @Query("SELECT * FROM notes WHERE is_deleted=0 ORDER BY id DESC")
     List<Note> getAll();
+
+    @Query("SELECT * FROM notes WHERE is_deleted=1 ORDER BY id DESC")
+    List<Note> getAllTrash();
 
     @Query("SELECT * FROM notes WHERE id=:id")
     Note getNoteById(long id);

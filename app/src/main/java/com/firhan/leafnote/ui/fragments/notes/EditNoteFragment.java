@@ -98,6 +98,8 @@ public class EditNoteFragment extends DaggerFragment implements View.OnClickList
             //success
             //hide soft keyboard
             KeyboardHelper.hideSoftKeyboard(getActivity());
+            //show snack bar
+            Snackbar.make(getView(), getResources().getText(R.string.edit_success_label), Snackbar.LENGTH_LONG).show();
             //back to list
             getActivity().onBackPressed();
         }else{

@@ -19,12 +19,21 @@ public class NoteRepository {
         return noteDao.getAll();
     }
 
+    public List<Note> getAllTrashCan(){
+        return noteDao.getAllTrash();
+    }
+
     public Note getNoteById(long id){
         return noteDao.getNoteById(id);
     }
 
     public long createNote(Note note){
         return noteDao.insert(note);
+    }
+
+    public void softDeleteNote(Note note){
+        note.setDeleted(true);
+        noteDao.update(note);
     }
 
     public void deleteNote(Note note){

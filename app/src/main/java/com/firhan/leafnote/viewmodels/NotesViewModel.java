@@ -20,6 +20,7 @@ public class NotesViewModel extends ViewModel {
 
     //vars
     private MutableLiveData<List<Note>> notes;
+    private MutableLiveData<List<Note>> trashNotes;
     private MutableLiveData<List<Note>> selectedNotes;
     private MutableLiveData<Note> selectedNote;
 
@@ -28,8 +29,13 @@ public class NotesViewModel extends ViewModel {
         this.noteRepository = noteRepository;
 
         if(notes == null){
+            //notes
             notes = new MutableLiveData<>();
             notes.setValue(noteRepository.getAll());
+
+            //trash notes
+            trashNotes = new MutableLiveData<>();
+            trashNotes.setValue(noteRepository.getAllTrashCan());
 
             //selected note
             selectedNote = new MutableLiveData<>();
@@ -86,6 +92,11 @@ public class NotesViewModel extends ViewModel {
         return notes;
     }
 
+    //get all notes in trash
+    public LiveData<List<Note>> getTrashNotes(){
+        return trashNotes;
+    }
+
     //get only selected note
     public LiveData<Note> getSelectedNote(){
         return selectedNote;
@@ -112,18 +123,24 @@ public class NotesViewModel extends ViewModel {
     public void deleteSelectedNotes(){
         //init new notes list
         List<Note> newNotes = getNotes().getValue();
+        List<Note> newTrashNotes = getTrashNotes().getValue();
 
         //deleting
         if(getSelectedNotes().getValue().size() > 0){
             for(Note note: getSelectedNotes().getValue()){
                 //remove from database
-                noteRepository.deleteNote(note);
+                noteRepository.softDeleteNote(note);
                 //remove from new note list
                 newNotes.remove(note);
+                //add removed note to trash can
+                newTrashNotes.add(note);
             }
 
             //update live data
             notes.setValue(newNotes);
+
+            //update trash can
+            trashNotes.setValue(newTrashNotes);
 
             //clear selected notes live data
             selectedNotes.setValue(new ArrayList<Note>());
@@ -132,10 +149,13 @@ public class NotesViewModel extends ViewModel {
 
     public void deleteSelectedNote(){
         //remove from database
-        noteRepository.deleteNote(getSelectedNote().getValue());
+        noteRepository.softDeleteNote(getSelectedNote().getValue());
 
         //update live data
         notes.setValue(noteRepository.getAll());
+
+        //update trash can
+        trashNotes.setValue(noteRepository.getAllTrashCan());
     }
 
     //get selected notes

@@ -18,7 +18,10 @@ public class NotesModule {
     @Provides
     @Singleton
     public NoteDatabase provideNoteDatabase(Application application){
-        return Room.databaseBuilder(application, NoteDatabase.class, "notes").allowMainThreadQueries().build();
+        return Room.databaseBuilder(application, NoteDatabase.class, "notes")
+                .fallbackToDestructiveMigration()
+                .allowMainThreadQueries()
+                .build();
     }
 
     @Provides

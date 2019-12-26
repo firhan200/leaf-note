@@ -44,14 +44,12 @@ public class NoteListFragment extends DaggerFragment implements INoteListClickLi
     private static final String TAG = "NoteListFragment";
 
     //vars
-    RecyclerView notesRecyclerView;
-    NotesRecyclerViewAdapter adapter;
-    RecyclerView.LayoutManager layoutManager;
-    FloatingActionButton floatingActionButton;
-    LinearLayout createFirstNoteHint;
+    private RecyclerView notesRecyclerView;
+    private NotesRecyclerViewAdapter adapter;
+    private LinearLayout createFirstNoteHint;
 
     //nav controller
-    INoteNavigation noteNavigation;
+    private INoteNavigation noteNavigation;
 
     //inject view model
     @Inject
@@ -113,15 +111,6 @@ public class NoteListFragment extends DaggerFragment implements INoteListClickLi
     }
 
     private void initListeners(){
-        //set add note btn listener
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //go to add note fragment
-                noteNavigation.navigateFragment(R.id.action_noteListFragment_to_addNoteFragment, null);
-            }
-        });
-
         //set click listener to create first note
         createFirstNoteHint.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,7 +123,6 @@ public class NoteListFragment extends DaggerFragment implements INoteListClickLi
 
     private void initIds(View view){
         notesRecyclerView = view.findViewById(R.id.notes_recycler_view);
-        floatingActionButton = view.findViewById(R.id.add_note_btn);
         createFirstNoteHint = view.findViewById(R.id.create_first_note_hint);
     }
 
@@ -144,7 +132,7 @@ public class NoteListFragment extends DaggerFragment implements INoteListClickLi
         notesRecyclerView.setAdapter(adapter);
 
         //set layout
-        layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         notesRecyclerView.setLayoutManager(layoutManager);
 
         //set decoration

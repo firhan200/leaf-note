@@ -51,4 +51,27 @@
         android:name="com.firhan.leafnote.ui.fragments.notes.EditNoteFragment"
         android:label="Edit Note"
         tools:layout="@layout/fragment_edit_note" />
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.firhan.leafnote.ui.fragments.settings.SettingFragment"
+        android:label="Setting"
+        tools:layout="@layout/fragment_setting" />
+    <fragment
+        android:id="@+id/trashCanFragment"
+        android:name="com.firhan.leafnote.ui.fragments.notes.TrashCanFragment"
+        android:label="Trash"
+        tools:layout="@layout/fragment_trash_can" >
+        <action
+            android:id="@+id/action_trashCanFragment_to_noteDetailFragment"
+            app:destination="@id/noteDetailFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.firhan.leafnote.ui.fragments.notes.SearchFragment"
+        android:label="Search Notes"
+        tools:layout="@layout/fragment_search" />
 </navigation>
