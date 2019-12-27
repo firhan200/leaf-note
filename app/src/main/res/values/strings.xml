@@ -13,6 +13,7 @@
     <string name="delete_success_label">Successfully Delete Note</string>
     <string name="edit_success_label">Successfully Edit Note</string>
     <string name="delete_selected_notes">Delete selected notes?</string>
+    <string name="permanent_delete_selected_notes">Permanent delete selected notes?</string>
 
     <!--    butttons -->
     <string name="save_label">Save</string>

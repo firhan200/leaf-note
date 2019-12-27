@@ -92,7 +92,7 @@ public class TrashCanFragment extends DaggerFragment implements INoteListClickLi
         });
 
         //set observer to selected notes
-        notesViewModel.getSelectedNotes().observe(this, new Observer<List<Note>>() {
+        notesViewModel.getSelectedTrashNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(List<Note> notes) {
                 Log.e(TAG, "onChanged: selected notes "+ notes.size());
@@ -143,7 +143,7 @@ public class TrashCanFragment extends DaggerFragment implements INoteListClickLi
         Note note = notesViewModel.getTrashNotes().getValue().get(position);
 
         //add or remove from selected notes live data
-        notesViewModel.selectNote(note);
+        notesViewModel.selectTrashNote(note);
 
         //toggle selected value
         note.setSelected(note.getSelected());
@@ -178,6 +178,6 @@ public class TrashCanFragment extends DaggerFragment implements INoteListClickLi
         }
 
         //show action menu bar
-        noteNavigation.showDeleteMenuIcon(isAnySelected);
+        noteNavigation.showDeleteMenuIcon(isAnySelected, true);
     }
 }

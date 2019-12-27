@@ -22,6 +22,7 @@ public class NotesViewModel extends ViewModel {
     private MutableLiveData<List<Note>> notes;
     private MutableLiveData<List<Note>> trashNotes;
     private MutableLiveData<List<Note>> selectedNotes;
+    private MutableLiveData<List<Note>> selectedTrashNotes;
     private MutableLiveData<Note> selectedNote;
 
     @Inject
@@ -44,6 +45,10 @@ public class NotesViewModel extends ViewModel {
             //selected notes list
             selectedNotes = new MutableLiveData<>();
             selectedNotes.setValue(new ArrayList<Note>());
+
+            //selected trash notes list
+            selectedTrashNotes = new MutableLiveData<>();
+            selectedTrashNotes.setValue(new ArrayList<Note>());
         }
     }
 
@@ -65,12 +70,28 @@ public class NotesViewModel extends ViewModel {
             note.setSelected(false);
 
             //remove from selected notes live data
-            removeNoteFromSelectedNotes(note);
+            removeNoteFromSelectedNotes(note, selectedNotes);
         }else{
             note.setSelected(true);
 
             //add to selected notes live data
-            addNoteToSelectedNotes(note);
+            addNoteToSelectedNotes(note, selectedNotes);
+        }
+    }
+
+    //set select note, after long press on note list
+    public void selectTrashNote(Note note){
+        //check if already selected
+        if(note.getSelected()){
+            note.setSelected(false);
+
+            //remove from selected notes live data
+            removeNoteFromSelectedNotes(note, selectedTrashNotes);
+        }else{
+            note.setSelected(true);
+
+            //add to selected notes live data
+            addNoteToSelectedNotes(note, selectedTrashNotes);
         }
     }
 
@@ -108,19 +129,20 @@ public class NotesViewModel extends ViewModel {
     }
 
     //add note to selected notes
-    public void addNoteToSelectedNotes(Note note){
+    public void addNoteToSelectedNotes(Note note, MutableLiveData<List<Note>> currentNoteList){
         List<Note> newSelectedNotes = getSelectedNotes().getValue();
         newSelectedNotes.add(note);
-        selectedNotes.setValue(newSelectedNotes);
+        currentNoteList.setValue(newSelectedNotes);
     }
 
-    public void removeNoteFromSelectedNotes(Note note){
+    //remove note from selected notes
+    public void removeNoteFromSelectedNotes(Note note, MutableLiveData<List<Note>> currentNoteList){
         List<Note> newSelectedNotes = getSelectedNotes().getValue();
         newSelectedNotes.remove(note);
-        selectedNotes.setValue(newSelectedNotes);
+        currentNoteList.setValue(newSelectedNotes);
     }
 
-    public void deleteSelectedNotes(){
+    public void deleteSelectedNotes(boolean isPermanent){
         //init new notes list
         List<Note> newNotes = getNotes().getValue();
         List<Note> newTrashNotes = getTrashNotes().getValue();
@@ -129,11 +151,26 @@ public class NotesViewModel extends ViewModel {
         if(getSelectedNotes().getValue().size() > 0){
             for(Note note: getSelectedNotes().getValue()){
                 //remove from database
-                noteRepository.softDeleteNote(note);
-                //remove from new note list
-                newNotes.remove(note);
-                //add removed note to trash can
-                newTrashNotes.add(note);
+                if(!isPermanent){
+                    //only soft delete
+                    noteRepository.softDeleteNote(note);
+                }else{
+                    //permanent delete
+                    noteRepository.deleteNote(note);
+                }
+
+                if(!isPermanent){
+                    //remove from new note list
+                    newNotes.remove(note);
+
+                    //add removed note to trash can
+                    //remove selected attr
+                    note.setSelected(false);
+                    newTrashNotes.add(note);
+                }else{
+                    //remove from trash can
+                    newTrashNotes.remove(note);
+                }
             }
 
             //update live data
@@ -144,6 +181,7 @@ public class NotesViewModel extends ViewModel {
 
             //clear selected notes live data
             selectedNotes.setValue(new ArrayList<Note>());
+            selectedTrashNotes.setValue(new ArrayList<Note>());
         }
     }
 
@@ -161,5 +199,8 @@ public class NotesViewModel extends ViewModel {
     //get selected notes
     public LiveData<List<Note>> getSelectedNotes(){
         return selectedNotes;
+    }
+    public LiveData<List<Note>> getSelectedTrashNotes(){
+        return selectedTrashNotes;
     }
 }

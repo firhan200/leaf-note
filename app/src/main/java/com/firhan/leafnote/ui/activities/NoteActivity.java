@@ -38,7 +38,7 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
     public NavController navController;
     BottomNavigationView bottomNavigationView;
     private TextView pageTitle;
-    private ImageView deleteSelectedNotesIcon, deleteSelectedNoteIcon, editSelectedNoteIcon;
+    private ImageView deleteSelectedNotesIcon, deleteSelectedNoteIcon, editSelectedNoteIcon, deleteNotePermanentIcon;
 
     @Inject
     NotesViewModel notesViewModel;
@@ -63,6 +63,7 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
         deleteSelectedNotesIcon = findViewById(R.id.delete_selected_notes_icon);
         deleteSelectedNoteIcon = findViewById(R.id.delete_selected_note_icon);
         editSelectedNoteIcon = findViewById(R.id.edit_selected_note_icon);
+        deleteNotePermanentIcon = findViewById(R.id.delete_note_permanent_icon);
     }
 
     private void initListeners(){
@@ -76,7 +77,7 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 //delete
-                                notesViewModel.deleteSelectedNotes();
+                                notesViewModel.deleteSelectedNotes(false);
 
                                 //show snack bar
                                 Snackbar.make(findViewById(android.R.id.content), getResources().getText(R.string.delete_success_label), Snackbar.LENGTH_LONG).show();
@@ -111,6 +112,36 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
 
                                 //go back
                                 onBackPressed();
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel_label, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //dismiss dialog
+                                dialog.dismiss();
+                            }
+                        })
+                        .create();
+
+                //show dialog
+                dialog.show();
+            }
+        });
+
+        deleteNotePermanentIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //show confirmation dialog
+                AlertDialog dialog = new AlertDialog.Builder(NoteActivity.this)
+                        .setTitle(R.string.app_name)
+                        .setMessage(R.string.permanent_delete_selected_notes)
+                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                notesViewModel.deleteSelectedNotes(true);
+
+                                //show snack bar
+                                Snackbar.make(findViewById(android.R.id.content), getResources().getText(R.string.delete_success_label), Snackbar.LENGTH_LONG).show();
                             }
                         })
                         .setNegativeButton(R.string.cancel_label, new DialogInterface.OnClickListener() {
@@ -162,11 +193,19 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
     }
 
     @Override
-    public void showDeleteMenuIcon(boolean isShow) {
-        if(isShow){
-            deleteSelectedNotesIcon.setVisibility(View.VISIBLE);
+    public void showDeleteMenuIcon(boolean isShow, boolean isTrashCan) {
+        if(isTrashCan){
+            if(isShow){
+                deleteNotePermanentIcon.setVisibility(View.VISIBLE);
+            }else{
+                deleteNotePermanentIcon.setVisibility(View.GONE);
+            }
         }else{
-            deleteSelectedNotesIcon.setVisibility(View.GONE);
+            if(isShow){
+                deleteSelectedNotesIcon.setVisibility(View.VISIBLE);
+            }else{
+                deleteSelectedNotesIcon.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -196,28 +235,35 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
 
     @Override
     public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
+        //default page title
         String pageTitleText = destination.getLabel().toString();
 
-        //check if on list
-        if(destination.getId() == R.id.noteListFragment){
-            pageTitleText = pageTitleText + "(" + notesViewModel.getNotes().getValue().size()  + ")";
-        }else if(destination.getId() == R.id.trashCanFragment){
-            pageTitleText = pageTitleText + "(" + notesViewModel.getTrashNotes().getValue().size()  + ")";
-        }
-
-        pageTitle.setText(pageTitleText);
-
+        //hide all top actions icon
+        showEditMenuIcon(false);
         //hide clear icon
-        showDeleteMenuIcon(false);
+        showDeleteMenuIcon(false, true);
+        showDeleteMenuIcon(false, false);
 
-        if(destination.getId() == R.id.noteDetailFragment){
-            //show edit btn
-            showEditMenuIcon(true);
+        switch (destination.getId()){
+            case R.id.noteListFragment:
+                //set page title
+                pageTitleText = pageTitleText + "(" + notesViewModel.getNotes().getValue().size()  + ")";
 
-        }else{
-            //show detail action menu
-            showEditMenuIcon(false);
+                break;
+            case R.id.noteDetailFragment:
+                //show edit btn
+                showEditMenuIcon(true);
+                break;
+            case R.id.trashCanFragment:
+                //set page title
+                pageTitleText = pageTitleText + "(" + notesViewModel.getTrashNotes().getValue().size()  + ")";
+                break;
+            default:
+                break;
         }
+
+        //set page title
+        pageTitle.setText(pageTitleText);
 
         //check is show bottom nav
         isShowBottomNav(destination.getId());

@@ -198,6 +198,6 @@ public class NoteListFragment extends DaggerFragment implements INoteListClickLi
         }
 
         //show action menu bar
-        noteNavigation.showDeleteMenuIcon(isAnySelected);
+        noteNavigation.showDeleteMenuIcon(isAnySelected, false);
     }
 }
