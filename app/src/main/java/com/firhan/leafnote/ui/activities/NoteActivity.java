@@ -55,6 +55,25 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
         initListeners();
 
         setupNavigation();
+
+        //observe
+        notesViewModel.getSelectedNote().observe(this, new Observer<Note>() {
+            @Override
+            public void onChanged(Note note) {
+                if(note != null){
+                    if(note.getDeleted()){
+                        //show edit btn
+                        showEditMenuIcon(false);
+                    }else{
+                        //show edit btn
+                        showEditMenuIcon(true);
+                    }
+                }else{
+                    //hide detail actions icon
+                    showEditMenuIcon(false);
+                }
+            }
+        });
     }
 
     private void initIds(){
@@ -238,8 +257,6 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
         //default page title
         String pageTitleText = destination.getLabel().toString();
 
-        //hide all top actions icon
-        showEditMenuIcon(false);
         //hide clear icon
         showDeleteMenuIcon(false, true);
         showDeleteMenuIcon(false, false);
@@ -249,10 +266,6 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
                 //set page title
                 pageTitleText = pageTitleText + "(" + notesViewModel.getNotes().getValue().size()  + ")";
 
-                break;
-            case R.id.noteDetailFragment:
-                //show edit btn
-                showEditMenuIcon(true);
                 break;
             case R.id.trashCanFragment:
                 //set page title

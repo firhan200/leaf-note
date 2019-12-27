@@ -73,5 +73,9 @@
         android:id="@+id/searchFragment"
         android:name="com.firhan.leafnote.ui.fragments.notes.SearchFragment"
         android:label="Search Notes"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_searchFragment_to_noteDetailFragment"
+            app:destination="@id/noteDetailFragment" />
+    </fragment>
 </navigation>

@@ -128,6 +128,13 @@ public class NotesViewModel extends ViewModel {
         selectedNote.setValue(note);
     }
 
+    //remove current selected note
+    public void clearSelectedNote(){
+        if(selectedNote.getValue() != null){
+            selectedNote.setValue(null);
+        }
+    }
+
     //add note to selected notes
     public void addNoteToSelectedNotes(Note note, MutableLiveData<List<Note>> currentNoteList){
         List<Note> newSelectedNotes = getSelectedNotes().getValue();

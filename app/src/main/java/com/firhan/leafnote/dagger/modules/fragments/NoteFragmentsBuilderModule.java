@@ -4,6 +4,7 @@ import com.firhan.leafnote.ui.fragments.notes.AddNoteFragment;
 import com.firhan.leafnote.ui.fragments.notes.EditNoteFragment;
 import com.firhan.leafnote.ui.fragments.notes.NoteDetailFragment;
 import com.firhan.leafnote.ui.fragments.notes.NoteListFragment;
+import com.firhan.leafnote.ui.fragments.notes.SearchFragment;
 import com.firhan.leafnote.ui.fragments.notes.TrashCanFragment;
 
 import dagger.Module;
@@ -25,4 +26,7 @@ public abstract class NoteFragmentsBuilderModule {
 
     @ContributesAndroidInjector
     abstract TrashCanFragment contributeTrashCanFragment();
+
+    @ContributesAndroidInjector
+    abstract SearchFragment contributeSearchFragment();
 }

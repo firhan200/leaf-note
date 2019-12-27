@@ -12,6 +12,9 @@ import java.util.List;
 
 @Dao
 public interface NoteDao {
+    @Query("SELECT * FROM notes WHERE title LIKE :keyword OR body LIKE :keyword ORDER BY id DESC")
+    List<Note> searchActiveNotes(String keyword);
+
     @Query("SELECT * FROM notes WHERE is_deleted=0 ORDER BY id DESC")
     List<Note> getAll();
 

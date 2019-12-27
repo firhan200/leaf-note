@@ -50,6 +50,14 @@ public class NoteDetailFragment extends DaggerFragment {
         populateData(getArguments().getInt("noteId"));
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        //remove selected note
+        notesViewModel.clearSelectedNote();
+    }
+
     private void initIds(View view){
         title = view.findViewById(R.id.detail_note_title);
         body = view.findViewById(R.id.detail_note_body);

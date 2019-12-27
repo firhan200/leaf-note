@@ -19,6 +19,10 @@ public class NoteRepository {
         return noteDao.getAll();
     }
 
+    public List<Note> searchNotes(String keyword){
+        return noteDao.searchActiveNotes(keyword);
+    }
+
     public List<Note> getAllTrashCan(){
         return noteDao.getAllTrash();
     }
