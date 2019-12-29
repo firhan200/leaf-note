@@ -114,10 +114,6 @@ public class TrashCanFragment extends DaggerFragment implements INoteListClickLi
         //set layout
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         notesRecyclerView.setLayoutManager(layoutManager);
-
-        //set decoration
-        DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
-        notesRecyclerView.addItemDecoration(itemDecoration);
     }
 
     @Override

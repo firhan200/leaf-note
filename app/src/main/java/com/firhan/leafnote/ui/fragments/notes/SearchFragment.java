@@ -19,11 +19,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.firhan.leafnote.R;
+import com.firhan.leafnote.helpers.KeyboardHelper;
 import com.firhan.leafnote.interfaces.INoteListClickListener;
 import com.firhan.leafnote.interfaces.INoteNavigation;
 import com.firhan.leafnote.rooms.entities.Note;
@@ -51,6 +53,9 @@ public class SearchFragment extends DaggerFragment implements INoteListClickList
     private RecyclerView searchNotesRecyclerView;
     private NotesRecyclerViewAdapter adapter;
     private List<Note> results;
+    private LinearLayout notFoundIcon;
+    private TextView labelTotalResults;
+    private ImageView searchNoteIcon;
 
     //nav controller
     private INoteNavigation noteNavigation;
@@ -84,30 +89,15 @@ public class SearchFragment extends DaggerFragment implements INoteListClickList
         //init ids
         initIds(view);
 
-        //request focus
-        keywordInput.requestFocus();
-
-        //set listener
-        keywordInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    searchNotesViewModel.setKeyword(v.getText().toString());
-                }
-
-                return false;
-            }
-        });
-
         //observe
         searchNotesViewModel.getKeyword().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                Log.e(TAG, "searching w/ keyword: " + s);
+                if(s != null && s.trim() != ""){
+                    KeyboardHelper.hideSoftKeyboard(getActivity());
 
-                //perform search
-                if(s != null && s != ""){
-                    new SearchNotesTask().execute(s);
+                    //perform search
+                    new SearchNotesTask().execute(s.trim());
                 }
             }
         });
@@ -120,9 +110,31 @@ public class SearchFragment extends DaggerFragment implements INoteListClickList
                 //clear results
                 results.clear();
 
-                //fill results
-                results.addAll(notes);
+                if(notes.size() > 0 && searchNotesViewModel.getKeyword().getValue() != null){
+                    //there is result
+                    searchNoteIcon.setVisibility(View.INVISIBLE);
+                    notFoundIcon.setVisibility(View.GONE);
 
+                    //set total results
+                    String totalResults = String.format("%d results", notes.size());
+                    labelTotalResults.setText(totalResults);
+                    labelTotalResults.setVisibility(View.VISIBLE);
+
+                    //fill results
+                    results.addAll(notes);
+                }else if(searchNotesViewModel.getKeyword().getValue() != null && notes.size() < 1){
+                    //no result
+                    searchNoteIcon.setVisibility(View.INVISIBLE);
+                    labelTotalResults.setVisibility(View.INVISIBLE);
+                    notFoundIcon.setVisibility(View.VISIBLE);
+                }else{
+                    //user haven't search yet
+                    searchNoteIcon.setVisibility(View.VISIBLE);
+                    labelTotalResults.setVisibility(View.INVISIBLE);
+                    notFoundIcon.setVisibility(View.GONE);
+                }
+
+                //notify adapter to change data set
                 adapter.notifyDataSetChanged();
             }
         });
@@ -132,17 +144,18 @@ public class SearchFragment extends DaggerFragment implements INoteListClickList
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
 
-        //clear keyword
-        searchNotesViewModel.setKeyword("");
+        KeyboardHelper.hideSoftKeyboard(getActivity());
     }
 
     private void initIds(View view){
-        keywordInput = view.findViewById(R.id.keyword_input);
         searchLoading = view.findViewById(R.id.search_loading);
         searchNotesRecyclerView = view.findViewById(R.id.search_notes_recycler_view);
+        notFoundIcon = view.findViewById(R.id.not_found_icon);
+        labelTotalResults = view.findViewById(R.id.label_total_results);
+        searchNoteIcon = view.findViewById(R.id.search_note_icon);
     }
 
     private void initRecyclerView(){
@@ -155,10 +168,6 @@ public class SearchFragment extends DaggerFragment implements INoteListClickList
         //set layout
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         searchNotesRecyclerView.setLayoutManager(layoutManager);
-
-        //set decoration
-        DividerItemDecoration itemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
-        searchNotesRecyclerView.addItemDecoration(itemDecoration);
     }
 
     @Override
@@ -196,7 +205,10 @@ public class SearchFragment extends DaggerFragment implements INoteListClickList
         protected void onPreExecute() {
             super.onPreExecute();
 
-            //show loading
+            //hide all, only show loading
+            searchNoteIcon.setVisibility(View.INVISIBLE);
+            labelTotalResults.setVisibility(View.INVISIBLE);
+            notFoundIcon.setVisibility(View.INVISIBLE);
             searchNotesRecyclerView.setVisibility(View.INVISIBLE);
             searchLoading.setVisibility(View.VISIBLE);
         }

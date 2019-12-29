@@ -108,20 +108,7 @@ public class NotesViewModel extends ViewModel {
         return noteRepository.getNoteById(id);
     }
 
-    //get all notes
-    public LiveData<List<Note>> getNotes(){
-        return notes;
-    }
 
-    //get all notes in trash
-    public LiveData<List<Note>> getTrashNotes(){
-        return trashNotes;
-    }
-
-    //get only selected note
-    public LiveData<Note> getSelectedNote(){
-        return selectedNote;
-    }
 
     //set selected note after click on list
     public void setSelectedNote(Note note){
@@ -149,6 +136,7 @@ public class NotesViewModel extends ViewModel {
         currentNoteList.setValue(newSelectedNotes);
     }
 
+    //delete all selected notes
     public void deleteSelectedNotes(boolean isPermanent){
         //init new notes list
         List<Note> newNotes = getNotes().getValue();
@@ -192,9 +180,12 @@ public class NotesViewModel extends ViewModel {
         }
     }
 
+    //soft delete single note
     public void deleteSelectedNote(){
+        Note selectedNote = getSelectedNote().getValue();
+
         //remove from database
-        noteRepository.softDeleteNote(getSelectedNote().getValue());
+        noteRepository.softDeleteNote(selectedNote);
 
         //update live data
         notes.setValue(noteRepository.getAll());
@@ -203,11 +194,45 @@ public class NotesViewModel extends ViewModel {
         trashNotes.setValue(noteRepository.getAllTrashCan());
     }
 
+    //restore note
+    public void restoreNote(Note note){
+        if(note !=null){
+            //set deleted to false
+            note.setDeleted(false);
+
+            //update to db
+            noteRepository.editNote(note);
+
+            //remove from trash
+            trashNotes.setValue(noteRepository.getAllTrashCan());
+
+            //add to active note
+            notes.setValue(noteRepository.getAll());
+        }
+    }
+
     //get selected notes
     public LiveData<List<Note>> getSelectedNotes(){
         return selectedNotes;
     }
+
+    //get selected on trash can
     public LiveData<List<Note>> getSelectedTrashNotes(){
         return selectedTrashNotes;
+    }
+
+    //get all active notes
+    public LiveData<List<Note>> getNotes(){
+        return notes;
+    }
+
+    //get all notes in trash
+    public LiveData<List<Note>> getTrashNotes(){
+        return trashNotes;
+    }
+
+    //get only selected note
+    public LiveData<Note> getSelectedNote(){
+        return selectedNote;
     }
 }

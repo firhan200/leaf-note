@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
-        <shape
-            android:shape="rectangle">
+        <shape android:shape="rectangle">
+
+            <padding
+                android:left="@dimen/noteListItemPadding"
+                android:right="@dimen/noteListItemPadding"
+                android:top="@dimen/noteListItemPadding"
+                android:bottom="@dimen/noteListItemPadding"/>
 
             <solid android:color="@color/colorPrimary"/>
+
+            <corners android:radius="20dp"/>
 
         </shape>
     </item>

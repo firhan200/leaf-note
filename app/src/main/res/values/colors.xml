@@ -8,7 +8,7 @@
     <color name="medium_gray">#BFC9CA</color>
     <color name="dark_gray">#99A3A4</color>
 
-    <color name="pageTitle">#161414</color>
+    <color name="pageTitle">#FFFFFF</color>
 
     <!--list item bg -->
     <color name="listItemSelected">#f2f2f2</color>

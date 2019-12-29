@@ -15,7 +15,10 @@ import androidx.navigation.ui.NavigationUI;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,6 +27,7 @@ import com.firhan.leafnote.helpers.KeyboardHelper;
 import com.firhan.leafnote.interfaces.INoteNavigation;
 import com.firhan.leafnote.rooms.entities.Note;
 import com.firhan.leafnote.viewmodels.NotesViewModel;
+import com.firhan.leafnote.viewmodels.SearchNotesViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -38,10 +42,16 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
     public NavController navController;
     BottomNavigationView bottomNavigationView;
     private TextView pageTitle;
-    private ImageView deleteSelectedNotesIcon, deleteSelectedNoteIcon, editSelectedNoteIcon, deleteNotePermanentIcon;
+    private EditText keywordInput;
+    private ImageView deleteSelectedNotesIcon, deleteSelectedNoteIcon,
+            editSelectedNoteIcon, deleteNotePermanentIcon,
+            restoreNoteIcon, resetKeywordInputIcon;
 
     @Inject
     NotesViewModel notesViewModel;
+
+    @Inject
+    SearchNotesViewModel searchNotesViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,14 +73,14 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
                 if(note != null){
                     if(note.getDeleted()){
                         //show edit btn
-                        showEditMenuIcon(false);
+                        showEditMenuIcon(false, note.getDeleted());
                     }else{
                         //show edit btn
-                        showEditMenuIcon(true);
+                        showEditMenuIcon(true, note.getDeleted());
                     }
                 }else{
                     //hide detail actions icon
-                    showEditMenuIcon(false);
+                    showEditMenuIcon(false, false);
                 }
             }
         });
@@ -83,9 +93,13 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
         deleteSelectedNoteIcon = findViewById(R.id.delete_selected_note_icon);
         editSelectedNoteIcon = findViewById(R.id.edit_selected_note_icon);
         deleteNotePermanentIcon = findViewById(R.id.delete_note_permanent_icon);
+        restoreNoteIcon = findViewById(R.id.restore_note_icon);
+        keywordInput = findViewById(R.id.keyword_input);
+        resetKeywordInputIcon = findViewById(R.id.reset_keyword_input_icon);
     }
 
     private void initListeners(){
+        //delete selected note list
         deleteSelectedNotesIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,6 +128,7 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
             }
         });
 
+        //delete single note from detail
         deleteSelectedNoteIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -147,6 +162,7 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
             }
         });
 
+        //delete permanent selected note list
         deleteNotePermanentIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -174,6 +190,82 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
 
                 //show dialog
                 dialog.show();
+            }
+        });
+
+        //restore note
+        restoreNoteIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //show confirmation dialog
+                AlertDialog dialog = new AlertDialog.Builder(NoteActivity.this)
+                        .setTitle(R.string.app_name)
+                        .setMessage(R.string.restore_note)
+                        .setPositiveButton("Restore", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //get selected note
+                                Note note = notesViewModel.getSelectedNote().getValue();
+                                if(note != null){
+                                    //restore note
+                                    notesViewModel.restoreNote(note);
+
+                                    //show snack bar
+                                    Snackbar.make(findViewById(android.R.id.content),
+                                            getResources().getText(R.string.restore_success_label),
+                                            Snackbar.LENGTH_LONG).show();
+
+                                    //back to list
+                                    onBackPressed();
+                                }else{
+                                    //show snack bar
+                                    Snackbar.make(findViewById(android.R.id.content),
+                                            getResources().getText(R.string.note_not_found),
+                                            Snackbar.LENGTH_LONG).show();
+
+                                    dialog.dismiss();
+                                }
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel_label, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //dismiss dialog
+                                dialog.dismiss();
+                            }
+                        })
+                        .create();
+
+                //show dialog
+                dialog.show();
+            }
+        });
+
+        //keyword input
+        keywordInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    //set live data
+                    searchNotesViewModel.setKeyword(v.getText().toString());
+                }
+
+                return false;
+            }
+        });
+
+        //reset keyword input
+        resetKeywordInputIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //clear view model
+                searchNotesViewModel.setKeyword(null);
+
+                //set to reset
+                keywordInput.setText(null);
+
+                //clear results
+                searchNotesViewModel.clearResults();
             }
         });
     }
@@ -229,13 +321,45 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
     }
 
     @Override
-    public void showEditMenuIcon(boolean isShow) {
-        if(isShow){
-            editSelectedNoteIcon.setVisibility(View.VISIBLE);
-            deleteSelectedNoteIcon.setVisibility(View.VISIBLE);
+    public void showEditMenuIcon(boolean isShow, boolean isDeleted) {
+        editSelectedNoteIcon.setVisibility(View.GONE);
+        deleteSelectedNoteIcon.setVisibility(View.GONE);
+        restoreNoteIcon.setVisibility(View.GONE);
+
+        if(isDeleted){
+            //deleted note
+            if(isShow){
+                restoreNoteIcon.setVisibility(View.VISIBLE);
+            }
         }else{
-            editSelectedNoteIcon.setVisibility(View.GONE);
-            deleteSelectedNoteIcon.setVisibility(View.GONE);
+            //active note
+            if(isShow){
+                editSelectedNoteIcon.setVisibility(View.VISIBLE);
+                deleteSelectedNoteIcon.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    private void setSearchNoteTopBar(boolean isShow){
+        if(isShow){
+            //set to visible
+            pageTitle.setVisibility(View.GONE);
+            keywordInput.setVisibility(View.VISIBLE);
+            resetKeywordInputIcon.setVisibility(View.VISIBLE);
+
+            //set focus
+            keywordInput.requestFocus();
+
+            //show soft keyboard
+            KeyboardHelper.showSoftKeyboard(this);
+        }else{
+            pageTitle.setVisibility(View.VISIBLE);
+            //remove
+            keywordInput.setVisibility(View.GONE);
+            resetKeywordInputIcon.setVisibility(View.GONE);
+
+            //clear focus
+            keywordInput.clearFocus();
         }
     }
 
@@ -257,9 +381,13 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
         //default page title
         String pageTitleText = destination.getLabel().toString();
 
+        //hide detail actions menus
+        showEditMenuIcon(false, false);
         //hide clear icon
         showDeleteMenuIcon(false, true);
         showDeleteMenuIcon(false, false);
+        //hide top bar
+        setSearchNoteTopBar(false);
 
         switch (destination.getId()){
             case R.id.noteListFragment:
@@ -271,6 +399,9 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
                 //set page title
                 pageTitleText = pageTitleText + "(" + notesViewModel.getTrashNotes().getValue().size()  + ")";
                 break;
+            case R.id.searchFragment:
+                //set top bar
+                setSearchNoteTopBar(true);
             default:
                 break;
         }

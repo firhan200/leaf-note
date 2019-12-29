@@ -11,12 +11,15 @@
     <string name="create_first_note_label">Create First Note</string>
     <string name="trash_note_label">Nothing in Trash Can</string>
     <string name="delete_success_label">Successfully Delete Note</string>
+    <string name="restore_success_label">Successfully Restore Note</string>
     <string name="edit_success_label">Successfully Edit Note</string>
     <string name="delete_selected_notes">Delete selected notes?</string>
     <string name="permanent_delete_selected_notes">Permanent delete selected notes?</string>
+    <string name="restore_note">Restore Note?</string>
+    <string name="note_not_found">Cannot Find Note</string>
 
     <!-- hint -->
-    <string name="search_note">Search note title or body..</string>
+    <string name="search_note">Search notes...</string>
 
     <!--    butttons -->
     <string name="save_label">Save</string>

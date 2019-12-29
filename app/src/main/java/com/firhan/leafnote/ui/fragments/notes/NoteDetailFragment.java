@@ -13,7 +13,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.firhan.leafnote.R;
+import com.firhan.leafnote.interfaces.INoteNavigation;
 import com.firhan.leafnote.rooms.entities.Note;
+import com.firhan.leafnote.ui.activities.NoteActivity;
 import com.firhan.leafnote.viewmodels.NotesViewModel;
 
 import javax.inject.Inject;
@@ -30,6 +32,8 @@ public class NoteDetailFragment extends DaggerFragment {
     @Inject
     NotesViewModel notesViewModel;
 
+    INoteNavigation noteNavigation;
+
     public NoteDetailFragment() {
         // Required empty public constructor
     }
@@ -44,6 +48,10 @@ public class NoteDetailFragment extends DaggerFragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        //init interface
+        noteNavigation = (NoteActivity) getContext();
+
+        //init ids
         initIds(view);
 
         //populate data
@@ -70,6 +78,13 @@ public class NoteDetailFragment extends DaggerFragment {
             //render
             title.setText(note.getTitle());
             body.setText(note.getBody());
+
+            //check if should show edit menu icon
+            if(!note.getDeleted()){
+                noteNavigation.showEditMenuIcon(true, note.getDeleted());
+            }else{
+                noteNavigation.showEditMenuIcon(true, note.getDeleted());
+            }
         }
     }
 }

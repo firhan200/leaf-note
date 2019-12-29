@@ -7,4 +7,6 @@
     <dimen name="formSpacing">20dp</dimen>
 
     <dimen name="bottom_navigation_stroke">1dp</dimen>
+
+    <dimen name="noteListItemPadding">20dp</dimen>
 </resources>

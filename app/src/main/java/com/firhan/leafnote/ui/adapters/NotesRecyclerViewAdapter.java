@@ -56,13 +56,13 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<NotesRecycler
 
         //set bg
         if(note.getSelected()){
-            holder.listItemNoteContainer.setBackgroundColor(ContextCompat.getColor(this.context, R.color.colorPrimary));
+            holder.listItemNoteContainer.setBackground(ContextCompat.getDrawable(this.context, R.drawable.note_list_item_selected));
             holder.listItemTitle.setTextColor(Color.WHITE);
             holder.listItemBody.setTextColor(Color.WHITE);
 
             animateSelected(holder);
         }else{
-            holder.listItemNoteContainer.setBackgroundColor(ContextCompat.getColor(this.context, R.color.listItemUnselected));
+            holder.listItemNoteContainer.setBackground(ContextCompat.getDrawable(this.context, R.drawable.note_list_item_background));
             holder.listItemTitle.setTextColor(ContextCompat.getColor(this.context, R.color.noteListItemTitle));
             holder.listItemBody.setTextColor(ContextCompat.getColor(this.context, R.color.noteListItemBody));
 

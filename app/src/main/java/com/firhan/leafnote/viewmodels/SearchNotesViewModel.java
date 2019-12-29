@@ -45,6 +45,10 @@ public class SearchNotesViewModel extends ViewModel {
         searchResults.postValue(results);
     }
 
+    public void clearResults(){
+        searchResults.setValue(new ArrayList<Note>());
+    }
+
     public LiveData<List<Note>> getSearchResult(){
         return searchResults;
     }
