@@ -6,6 +6,8 @@ import com.firhan.leafnote.ui.fragments.notes.NoteDetailFragment;
 import com.firhan.leafnote.ui.fragments.notes.NoteListFragment;
 import com.firhan.leafnote.ui.fragments.notes.SearchFragment;
 import com.firhan.leafnote.ui.fragments.notes.TrashCanFragment;
+import com.firhan.leafnote.ui.fragments.settings.PinFragment;
+import com.firhan.leafnote.ui.fragments.settings.SettingFragment;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -29,4 +31,10 @@ public abstract class NoteFragmentsBuilderModule {
 
     @ContributesAndroidInjector
     abstract SearchFragment contributeSearchFragment();
+
+    @ContributesAndroidInjector
+    abstract SettingFragment contributeSettingFragment();
+
+    @ContributesAndroidInjector
+    abstract PinFragment contributePinFragment();
 }

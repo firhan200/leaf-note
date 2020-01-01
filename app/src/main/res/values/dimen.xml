@@ -9,4 +9,13 @@
     <dimen name="bottom_navigation_stroke">1dp</dimen>
 
     <dimen name="noteListItemPadding">20dp</dimen>
+
+    <dimen name="smallText">14sp</dimen>
+    <dimen name="mediumText">16sp</dimen>
+    <dimen name="largeText">18sp</dimen>
+
+    <dimen name="settingPad">10dp</dimen>
+    <dimen name="pinBtnPad">10dp</dimen>
+    <dimen name="pinBtnTextSize">26sp</dimen>
+    <dimen name="pinStarTextSize">46sp</dimen>
 </resources>

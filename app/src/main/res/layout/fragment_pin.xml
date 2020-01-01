@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.fragments.settings.PinFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/pin_label"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:gravity="bottom"
+            android:textAlignment="center"
+            android:text="Enter Pin"
+            app:layout_constraintBottom_toTopOf="@id/pin_star_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/pin_star_label"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:gravity="top"
+            android:textAlignment="center"
+            android:textSize="@dimen/pinStarTextSize"
+            app:layout_constraintBottom_toTopOf="@id/pin_btn_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/pin_label" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/pin_btn_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <TextView
+                android:id="@+id/pin_btn_1"
+                android:text="1"
+                android:padding="@dimen/pinBtnPad"
+                android:gravity="center"
+                android:textSize="@dimen/pinBtnTextSize"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.33"/>
+
+            <TextView
+                android:id="@+id/pin_btn_2"
+                android:text="2"
+                android:padding="@dimen/pinBtnPad"
+                android:gravity="center"
+                android:textSize="@dimen/pinBtnTextSize"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/pin_btn_1"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.33"/>
+
+            <TextView
+                android:id="@+id/pin_btn_3"
+                android:text="3"
+                android:padding="@dimen/pinBtnPad"
+                android:gravity="center"
+                android:textSize="@dimen/pinBtnTextSize"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/pin_btn_2"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.33"/>
+
+            <TextView
+                android:id="@+id/pin_btn_4"
+                android:text="4"
+                android:padding="@dimen/pinBtnPad"
+                android:gravity="center"
+                android:textSize="@dimen/pinBtnTextSize"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/pin_btn_1"
+                app:layout_constraintWidth_percent="0.33"/>
+
+            <TextView
+                android:id="@+id/pin_btn_5"
+                android:text="5"
+                android:padding="@dimen/pinBtnPad"
+                android:gravity="center"
+                android:textSize="@dimen/pinBtnTextSize"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/pin_btn_4"
+                app:layout_constraintTop_toBottomOf="@id/pin_btn_2"
+                app:layout_constraintWidth_percent="0.33"/>
+
+            <TextView
+                android:id="@+id/pin_btn_6"
+                android:text="6"
+                android:padding="@dimen/pinBtnPad"
+                android:gravity="center"
+                android:textSize="@dimen/pinBtnTextSize"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/pin_btn_5"
+                app:layout_constraintTop_toBottomOf="@id/pin_btn_3"
+                app:layout_constraintWidth_percent="0.33"/>
+
+            <TextView
+                android:id="@+id/pin_btn_7"
+                android:text="7"
+                android:padding="@dimen/pinBtnPad"
+                android:gravity="center"
+                android:textSize="@dimen/pinBtnTextSize"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/pin_btn_4"
+                app:layout_constraintWidth_percent="0.33"/>
+
+            <TextView
+                android:id="@+id/pin_btn_8"
+                android:text="8"
+                android:padding="@dimen/pinBtnPad"
+                android:gravity="center"
+                android:textSize="@dimen/pinBtnTextSize"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/pin_btn_7"
+                app:layout_constraintTop_toBottomOf="@id/pin_btn_5"
+                app:layout_constraintWidth_percent="0.33"/>
+
+            <TextView
+                android:id="@+id/pin_btn_9"
+                android:text="9"
+                android:padding="@dimen/pinBtnPad"
+                android:gravity="center"
+                android:textSize="@dimen/pinBtnTextSize"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/pin_btn_8"
+                app:layout_constraintTop_toBottomOf="@id/pin_btn_6"
+                app:layout_constraintWidth_percent="0.33"/>
+
+            <TextView
+                android:id="@+id/pin_btn_0"
+                android:text="0"
+                android:padding="@dimen/pinBtnPad"
+                android:gravity="center"
+                android:textSize="@dimen/pinBtnTextSize"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/pin_btn_7"
+                app:layout_constraintTop_toBottomOf="@id/pin_btn_8"
+                app:layout_constraintWidth_percent="0.33"/>
+
+            <TextView
+                android:id="@+id/pin_btn_del"
+                android:text="Del"
+                android:padding="@dimen/pinBtnPad"
+                android:gravity="center"
+                android:textSize="@dimen/pinBtnTextSize"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/pin_btn_0"
+                app:layout_constraintTop_toBottomOf="@id/pin_btn_9"
+                app:layout_constraintWidth_percent="0.33"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

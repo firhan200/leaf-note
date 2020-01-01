@@ -417,6 +417,7 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
         if(
                 fragmentId == R.id.noteDetailFragment
                 || fragmentId == R.id.editNoteFragment
+                || fragmentId == R.id.pinFragment
         ){
             //hide bottom nav
             setBottomNavigationVisibility(false);

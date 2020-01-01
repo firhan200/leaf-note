@@ -3,20 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_main"
-    app:startDestination="@id/noteListFragment">
+    app:startDestination="@+id/pinFragment">
 
     <fragment
         android:id="@+id/noteListFragment"
         android:name="com.firhan.leafnote.ui.fragments.notes.NoteListFragment"
         android:label="Leaf Note"
-        tools:layout="@layout/fragment_note_list" >
+        tools:layout="@layout/fragment_note_list">
         <action
             android:id="@+id/action_noteListFragment_to_noteDetailFragment"
             app:destination="@id/noteDetailFragment"
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_right"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_noteListFragment_to_editNoteFragment"
             app:destination="@id/editNoteFragment" />
@@ -26,20 +26,20 @@
             app:enterAnim="@anim/slide_in_top"
             app:exitAnim="@anim/slide_out_top"
             app:popEnterAnim="@anim/slide_in_bottom"
-            app:popExitAnim="@anim/slide_out_bottom"/>
+            app:popExitAnim="@anim/slide_out_bottom" />
     </fragment>
     <fragment
         android:id="@+id/noteDetailFragment"
         android:name="com.firhan.leafnote.ui.fragments.notes.NoteDetailFragment"
         android:label="Detail"
-        tools:layout="@layout/fragment_note_detail" >
+        tools:layout="@layout/fragment_note_detail">
         <action
             android:id="@+id/action_noteDetailFragment_to_editNoteFragment"
             app:destination="@id/editNoteFragment"
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_right"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/addNoteFragment"
@@ -55,27 +55,46 @@
         android:id="@+id/settingFragment"
         android:name="com.firhan.leafnote.ui.fragments.settings.SettingFragment"
         android:label="Setting"
-        tools:layout="@layout/fragment_setting" />
+        tools:layout="@layout/fragment_setting">
+        <action
+            android:id="@+id/action_settingFragment_to_pinFragment"
+            app:destination="@id/pinFragment"
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/slide_out_top"
+            app:popEnterAnim="@anim/slide_in_bottom"
+            app:popExitAnim="@anim/slide_out_bottom" />
+    </fragment>
     <fragment
         android:id="@+id/trashCanFragment"
         android:name="com.firhan.leafnote.ui.fragments.notes.TrashCanFragment"
         android:label="Trash"
-        tools:layout="@layout/fragment_trash_can" >
+        tools:layout="@layout/fragment_trash_can">
         <action
             android:id="@+id/action_trashCanFragment_to_noteDetailFragment"
             app:destination="@id/noteDetailFragment"
             app:enterAnim="@anim/slide_in_left"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_right"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.firhan.leafnote.ui.fragments.notes.SearchFragment"
         android:label="Search Notes"
-        tools:layout="@layout/fragment_search" >
+        tools:layout="@layout/fragment_search">
         <action
             android:id="@+id/action_searchFragment_to_noteDetailFragment"
             app:destination="@id/noteDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/pinFragment"
+        android:name="com.firhan.leafnote.ui.fragments.settings.PinFragment"
+        android:label="PIN"
+        tools:layout="@layout/fragment_pin">
+        <action
+            android:id="@+id/action_pinFragment_to_noteListFragment"
+            app:destination="@id/noteListFragment"
+            app:popUpTo="@id/pinFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>
