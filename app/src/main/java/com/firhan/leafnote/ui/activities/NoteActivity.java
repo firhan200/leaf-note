@@ -4,17 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
+import androidx.navigation.NavGraph;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -46,6 +45,7 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
     private ImageView deleteSelectedNotesIcon, deleteSelectedNoteIcon,
             editSelectedNoteIcon, deleteNotePermanentIcon,
             restoreNoteIcon, resetKeywordInputIcon;
+    private Toolbar toolbar;
 
     @Inject
     NotesViewModel notesViewModel;
@@ -273,17 +273,15 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
     private void setupNavigation(){
         //set navigation graph
         navController = Navigation.findNavController(this,R.id.nav_host_fragment);
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph())
-                .build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+
+        //setup bottom nav
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
-        //disable default toolbar
-        getSupportActionBar().hide();
-
         //setup toolbar
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        NavigationUI.setupWithNavController(toolbar, navController);
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.noteListFragment).build();
+        NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration);
 
         //set on destination change
         navController.addOnDestinationChangedListener(this);
@@ -386,14 +384,16 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
         //hide clear icon
         showDeleteMenuIcon(false, true);
         showDeleteMenuIcon(false, false);
-        //hide top bar
+        //hide top bar search
         setSearchNoteTopBar(false);
+
+        //show toolbar
+        toolbar.setVisibility(View.VISIBLE);
 
         switch (destination.getId()){
             case R.id.noteListFragment:
                 //set page title
                 pageTitleText = pageTitleText + "(" + notesViewModel.getNotes().getValue().size()  + ")";
-
                 break;
             case R.id.trashCanFragment:
                 //set page title
@@ -402,12 +402,16 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
             case R.id.searchFragment:
                 //set top bar
                 setSearchNoteTopBar(true);
+                break;
+            case R.id.pinFragment:
+                toolbar.setVisibility(View.GONE);
+                break;
             default:
                 break;
         }
 
         //set page title
-        pageTitle.setText(pageTitleText);
+        setPageTitle(pageTitleText);
 
         //check is show bottom nav
         isShowBottomNav(destination.getId());

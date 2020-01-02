@@ -22,7 +22,7 @@
     <string name="lock_app">Lock App</string>
     <string name="use_pin">Use PIN</string>
     <string name="setup_pin">Setup PIN</string>
-    <string name="use_fingerprint">Use Fingerprint</string>
+    <string name="use_fingerprint">Enable Fingerprint</string>
 
     <!-- hint -->
     <string name="search_note">Search notes...</string>

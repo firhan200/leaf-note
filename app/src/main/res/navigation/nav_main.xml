@@ -94,7 +94,12 @@
         <action
             android:id="@+id/action_pinFragment_to_noteListFragment"
             app:destination="@id/noteListFragment"
-            app:popUpTo="@id/pinFragment"
-            app:popUpToInclusive="true" />
+            app:enterAnim="@anim/slide_in_top"
+            app:exitAnim="@anim/slide_out_top"
+            app:popEnterAnim="@anim/slide_in_bottom"
+            app:popExitAnim="@anim/slide_out_bottom"
+            app:popUpTo="@+id/pinFragment"
+            app:popUpToInclusive="true"
+            app:launchSingleTop="true"/>
     </fragment>
 </navigation>

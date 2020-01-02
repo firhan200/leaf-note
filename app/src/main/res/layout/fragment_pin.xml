@@ -10,17 +10,37 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/pin_label"
+        <LinearLayout
+            android:id="@+id/pin_label_layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:gravity="bottom"
-            android:textAlignment="center"
-            android:text="Enter Pin"
+            android:orientation="vertical"
             app:layout_constraintBottom_toTopOf="@id/pin_star_label"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            android:gravity="bottom">
+
+            <ImageView
+                android:id="@+id/fingerprint_icon"
+                android:visibility="gone"
+                android:layout_gravity="center"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_fingerprint_primary_24dp"
+                android:layout_weight="5"/>
+
+            <TextView
+                android:id="@+id/pin_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="bottom"
+                android:textAlignment="center"
+                android:text="Enter Pin"
+                android:layout_weight="1"
+                />
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/pin_star_label"
@@ -33,7 +53,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/pin_label" />
+            app:layout_constraintTop_toBottomOf="@id/pin_label_layout" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/pin_btn_layout"

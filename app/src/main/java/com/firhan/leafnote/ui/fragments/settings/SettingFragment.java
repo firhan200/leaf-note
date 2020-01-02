@@ -32,7 +32,7 @@ import dagger.android.support.DaggerFragment;
  */
 public class SettingFragment extends DaggerFragment {
     //vars
-    private Switch lockApp, usePin, useFingerprint;
+    private Switch lockApp, useFingerprint;
     private Boolean isFirstPopulate;
     private LinearLayout setupPinLayout;
 
@@ -85,19 +85,14 @@ public class SettingFragment extends DaggerFragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(!isFirstPopulate) {
-                    settingViewModel.updateLockApp(isChecked);
-                    showMessage(getResources().getText(R.string.lock_app).toString() + " updated");
-                }
-            }
-        });
-
-        //use pin listener
-        usePin.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(!isFirstPopulate) {
-                    settingViewModel.updateUsePin(isChecked);
-                    showMessage(getResources().getText(R.string.use_pin).toString() + " updated");
+                    //check if pin already set
+                    String settedPin = settingViewModel.getSettings().getValue().getPin();
+                    if(settedPin != null && settedPin != ""){
+                        settingViewModel.updateLockApp(isChecked);
+                    }else{
+                        //user must set pin first
+                        goToSetupPin();
+                    }
                 }
             }
         });
@@ -108,7 +103,6 @@ public class SettingFragment extends DaggerFragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(!isFirstPopulate){
                     settingViewModel.updateUseFingerprint(isChecked);
-                    showMessage(getResources().getText(R.string.use_fingerprint).toString() + " updated");
                 }
             }
         });
@@ -117,12 +111,16 @@ public class SettingFragment extends DaggerFragment {
         setupPinLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //show pin fragment
-                Bundle bundle = new Bundle();
-                bundle.putBoolean("isSetupPin", true);
-                noteNavigation.navigateFragment(R.id.action_settingFragment_to_pinFragment, bundle);
+                goToSetupPin();
             }
         });
+    }
+
+    private void goToSetupPin(){
+        //show pin fragment
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("isSetupPin", true);
+        noteNavigation.navigateFragment(R.id.action_settingFragment_to_pinFragment, bundle);
     }
 
     private void showMessage(String message){
@@ -131,7 +129,6 @@ public class SettingFragment extends DaggerFragment {
 
     private void initIds(View view){
         lockApp = view.findViewById(R.id.setting_lock_app);
-        usePin = view.findViewById(R.id.setting_use_pin);
         useFingerprint = view.findViewById(R.id.setting_use_fingerprint);
         setupPinLayout = view.findViewById(R.id.setting_setup_pin_layout);
     }
@@ -139,9 +136,6 @@ public class SettingFragment extends DaggerFragment {
     private void populateSetting(Setting setting){
         //lock app
         lockApp.setChecked(setting.getAppLock());
-
-        //use pin
-        usePin.setChecked(setting.getUsePin());
 
         //use fingerprint
         useFingerprint.setChecked(setting.getUseFingerPrint());

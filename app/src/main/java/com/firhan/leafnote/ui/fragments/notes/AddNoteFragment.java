@@ -16,6 +16,7 @@ import android.widget.EditText;
 
 import com.firhan.leafnote.R;
 import com.firhan.leafnote.helpers.KeyboardHelper;
+import com.firhan.leafnote.interfaces.INoteNavigation;
 import com.firhan.leafnote.rooms.entities.Note;
 import com.firhan.leafnote.ui.activities.NoteActivity;
 import com.firhan.leafnote.viewmodels.NotesViewModel;
@@ -35,6 +36,9 @@ public class AddNoteFragment extends DaggerFragment implements View.OnClickListe
     EditText title, body;
     Button addNoteSubmitBtn;
 
+    //interface
+    INoteNavigation noteNavigation;
+
     @Inject
     NotesViewModel notesViewModel;
 
@@ -52,6 +56,8 @@ public class AddNoteFragment extends DaggerFragment implements View.OnClickListe
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        noteNavigation = (NoteActivity) getContext();
+
         //init ids
         initIds(view);
     }
@@ -82,7 +88,7 @@ public class AddNoteFragment extends DaggerFragment implements View.OnClickListe
                 //hide soft keyboard
                 KeyboardHelper.hideSoftKeyboard(getActivity());
                 //back to list
-                getActivity().onBackPressed();
+                noteNavigation.navigateFragment(R.id.noteListFragment, null);
             }else{
                 //failed
                 showError("Failed to create new note.");

@@ -36,36 +36,11 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/setting_use_pin_layout"
-            android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/setting_lock_app_layout"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:background="@drawable/setting_background">
-
-            <TextView
-                android:text="@string/use_pin"
-                android:textSize="@dimen/largeText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"/>
-
-            <Switch
-                android:id="@+id/setting_use_pin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"/>
-
-        </LinearLayout>
-
-        <LinearLayout
             android:id="@+id/setting_setup_pin_layout"
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/setting_use_pin_layout"
+            app:layout_constraintTop_toBottomOf="@id/setting_lock_app_layout"
             android:gravity="center"
             android:orientation="horizontal"
             android:background="@drawable/setting_background">
