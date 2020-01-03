@@ -1,5 +1,6 @@
 package com.firhan.leafnote.rooms.daos;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -16,10 +17,10 @@ public interface NoteDao {
     List<Note> searchActiveNotes(String keyword);
 
     @Query("SELECT * FROM notes WHERE is_deleted=0 ORDER BY id DESC")
-    List<Note> getAll();
+    LiveData<List<Note>> getAll();
 
     @Query("SELECT * FROM notes WHERE is_deleted=1 ORDER BY id DESC")
-    List<Note> getAllTrash();
+    LiveData<List<Note>> getAllTrash();
 
     @Query("SELECT * FROM notes WHERE id=:id")
     Note getNoteById(long id);
@@ -30,6 +31,12 @@ public interface NoteDao {
     @Update
     void update(Note note);
 
+    @Update
+    void updateNotes(List<Note> notes);
+
     @Delete
     void delete(Note note);
+
+    @Delete
+    void deleteNotes(List<Note> notes);
 }

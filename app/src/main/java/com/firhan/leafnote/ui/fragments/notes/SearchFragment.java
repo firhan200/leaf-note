@@ -135,7 +135,7 @@ public class SearchFragment extends DaggerFragment implements INoteListClickList
                 }
 
                 //notify adapter to change data set
-                adapter.notifyDataSetChanged();
+                adapter.submitList(notes);
             }
         });
 
@@ -162,7 +162,7 @@ public class SearchFragment extends DaggerFragment implements INoteListClickList
         results = new ArrayList<>();
 
         //set adapter
-        adapter = new NotesRecyclerViewAdapter(getContext() , results, this);
+        adapter = new NotesRecyclerViewAdapter(getContext() , this);
         searchNotesRecyclerView.setAdapter(adapter);
 
         //set layout

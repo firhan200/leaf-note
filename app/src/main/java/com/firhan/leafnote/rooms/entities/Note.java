@@ -5,6 +5,8 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import java.util.Objects;
+
 @Entity(tableName = "notes")
 public class Note {
     @PrimaryKey(autoGenerate = true)
@@ -69,5 +71,15 @@ public class Note {
 
     public void setDeleted(Boolean deleted) {
         isDeleted = deleted;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        Note note = (Note) o;
+        return id == note.id &&
+                title.equals(note.title) &&
+                body.equals(note.body) &&
+                isDeleted.equals(note.isDeleted) &&
+                selected.equals(note.selected);
     }
 }

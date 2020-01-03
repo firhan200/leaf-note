@@ -19,8 +19,8 @@ public class NotesViewModel extends ViewModel {
     private NoteRepository noteRepository;
 
     //vars
-    private MutableLiveData<List<Note>> notes;
-    private MutableLiveData<List<Note>> trashNotes;
+    private LiveData<List<Note>> notes;
+    private LiveData<List<Note>> trashNotes;
     private MutableLiveData<List<Note>> selectedNotes;
     private MutableLiveData<List<Note>> selectedTrashNotes;
     private MutableLiveData<Note> selectedNote;
@@ -29,38 +29,27 @@ public class NotesViewModel extends ViewModel {
     public NotesViewModel(NoteRepository noteRepository) {
         this.noteRepository = noteRepository;
 
-        if(notes == null){
-            //notes
-            notes = new MutableLiveData<>();
-            notes.setValue(noteRepository.getAll());
+        //notes
+        notes = this.noteRepository.getAllNotes();
 
-            //trash notes
-            trashNotes = new MutableLiveData<>();
-            trashNotes.setValue(noteRepository.getAllTrashCan());
+        //trash notes
+        trashNotes = this.noteRepository.getAllTrashCan();
 
-            //selected note
-            selectedNote = new MutableLiveData<>();
-            selectedNote.setValue(null);
+        //selected note
+        selectedNote = new MutableLiveData<>();
+        selectedNote.setValue(null);
 
-            //selected notes list
-            selectedNotes = new MutableLiveData<>();
-            selectedNotes.setValue(new ArrayList<Note>());
+        //selected notes list
+        selectedNotes = new MutableLiveData<>();
+        selectedNotes.setValue(new ArrayList<Note>());
 
-            //selected trash notes list
-            selectedTrashNotes = new MutableLiveData<>();
-            selectedTrashNotes.setValue(new ArrayList<Note>());
-        }
+        //selected trash notes list
+        selectedTrashNotes = new MutableLiveData<>();
+        selectedTrashNotes.setValue(new ArrayList<Note>());
     }
 
     public long addNote(Note note){
-        long lastInsertedId = noteRepository.createNote(note);
-
-        if(lastInsertedId > 0){
-            //success, set new val
-            notes.postValue(noteRepository.getAll());
-        }
-
-        return lastInsertedId;
+        return noteRepository.createNote(note);
     }
 
     //set select note, after long press on note list
@@ -98,17 +87,12 @@ public class NotesViewModel extends ViewModel {
     //update note data
     public void updateNote(Note note){
         noteRepository.editNote(note);
-
-        //update live data
-        notes.postValue(noteRepository.getAll());
     }
 
     //get note by id
     public Note getNote(long id){
         return noteRepository.getNoteById(id);
     }
-
-
 
     //set selected note after click on list
     public void setSelectedNote(Note note){
@@ -123,14 +107,14 @@ public class NotesViewModel extends ViewModel {
     }
 
     //add note to selected notes
-    public void addNoteToSelectedNotes(Note note, MutableLiveData<List<Note>> currentNoteList){
+    private void addNoteToSelectedNotes(Note note, MutableLiveData<List<Note>> currentNoteList){
         List<Note> newSelectedNotes = getSelectedNotes().getValue();
         newSelectedNotes.add(note);
         currentNoteList.setValue(newSelectedNotes);
     }
 
     //remove note from selected notes
-    public void removeNoteFromSelectedNotes(Note note, MutableLiveData<List<Note>> currentNoteList){
+    private void removeNoteFromSelectedNotes(Note note, MutableLiveData<List<Note>> currentNoteList){
         List<Note> newSelectedNotes = getSelectedNotes().getValue();
         newSelectedNotes.remove(note);
         currentNoteList.setValue(newSelectedNotes);
@@ -138,41 +122,16 @@ public class NotesViewModel extends ViewModel {
 
     //delete all selected notes
     public void deleteSelectedNotes(boolean isPermanent){
-        //init new notes list
-        List<Note> newNotes = getNotes().getValue();
-        List<Note> newTrashNotes = getTrashNotes().getValue();
-
         //deleting
         if(getSelectedNotes().getValue().size() > 0){
-            for(Note note: getSelectedNotes().getValue()){
-                //remove from database
-                if(!isPermanent){
-                    //only soft delete
-                    noteRepository.softDeleteNote(note);
-                }else{
-                    //permanent delete
-                    noteRepository.deleteNote(note);
-                }
-
-                if(!isPermanent){
-                    //remove from new note list
-                    newNotes.remove(note);
-
-                    //add removed note to trash can
-                    //remove selected attr
-                    note.setSelected(false);
-                    newTrashNotes.add(note);
-                }else{
-                    //remove from trash can
-                    newTrashNotes.remove(note);
-                }
+            //remove from database
+            if(!isPermanent){
+                //only soft delete
+                noteRepository.softDeleteNotes(getSelectedNotes().getValue());
+            }else{
+                //permanent delete
+                noteRepository.deleteNotes(getSelectedNotes().getValue());
             }
-
-            //update live data
-            notes.setValue(newNotes);
-
-            //update trash can
-            trashNotes.setValue(newTrashNotes);
 
             //clear selected notes live data
             selectedNotes.setValue(new ArrayList<Note>());
@@ -186,12 +145,6 @@ public class NotesViewModel extends ViewModel {
 
         //remove from database
         noteRepository.softDeleteNote(selectedNote);
-
-        //update live data
-        notes.setValue(noteRepository.getAll());
-
-        //update trash can
-        trashNotes.setValue(noteRepository.getAllTrashCan());
     }
 
     //restore note
@@ -202,12 +155,6 @@ public class NotesViewModel extends ViewModel {
 
             //update to db
             noteRepository.editNote(note);
-
-            //remove from trash
-            trashNotes.setValue(noteRepository.getAllTrashCan());
-
-            //add to active note
-            notes.setValue(noteRepository.getAll());
         }
     }
 

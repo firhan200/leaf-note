@@ -13,8 +13,7 @@
             android:id="@+id/trash_notes_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:longClickable="true"
-            android:layoutAnimation="@anim/layout_animation_fall_down"/>
+            android:longClickable="true"/>
 
         <LinearLayout
             android:id="@+id/trash_can_note_hint"

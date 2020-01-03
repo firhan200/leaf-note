@@ -393,11 +393,11 @@ public class NoteActivity extends DaggerAppCompatActivity implements INoteNaviga
         switch (destination.getId()){
             case R.id.noteListFragment:
                 //set page title
-                pageTitleText = pageTitleText + "(" + notesViewModel.getNotes().getValue().size()  + ")";
+                pageTitleText = pageTitleText;
                 break;
             case R.id.trashCanFragment:
                 //set page title
-                pageTitleText = pageTitleText + "(" + notesViewModel.getTrashNotes().getValue().size()  + ")";
+                pageTitleText = pageTitleText;
                 break;
             case R.id.searchFragment:
                 //set top bar

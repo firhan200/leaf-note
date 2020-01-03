@@ -84,10 +84,10 @@ public class NoteListFragment extends DaggerFragment implements INoteListClickLi
         initListeners();
 
         //set observer to notes
-        notesViewModel.getNotes().observe(this, new Observer<List<Note>>() {
+        notesViewModel.getNotes().observe(getActivity(), new Observer<List<Note>>() {
             @Override
             public void onChanged(List<Note> notes) {
-            adapter.notifyDataSetChanged();
+            adapter.submitList(notes);
 
             //check notes
             if(notes.size() < 1){
@@ -128,7 +128,7 @@ public class NoteListFragment extends DaggerFragment implements INoteListClickLi
 
     private void initRecyclerView(){
         //set adapter
-        adapter = new NotesRecyclerViewAdapter(getContext() ,notesViewModel.getNotes().getValue(), this);
+        adapter = new NotesRecyclerViewAdapter(getContext() , this);
         notesRecyclerView.setAdapter(adapter);
 
         //set layout
@@ -189,7 +189,7 @@ public class NoteListFragment extends DaggerFragment implements INoteListClickLi
         }else{
             //set back to app name
             String pageTitleText = getResources().getString(R.string.app_name);
-            pageTitleText = getResources().getString(R.string.app_name) + " (" + notesViewModel.getNotes().getValue().size() + ")";
+            pageTitleText = getResources().getString(R.string.app_name);
             noteNavigation.setPageTitle(pageTitleText);
         }
 

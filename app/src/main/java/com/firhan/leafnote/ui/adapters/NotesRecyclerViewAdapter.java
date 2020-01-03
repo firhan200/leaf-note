@@ -15,6 +15,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firhan.leafnote.R;
@@ -25,16 +27,33 @@ import org.w3c.dom.Text;
 
 import java.util.List;
 
-public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<NotesRecyclerViewAdapter.ViewHolder> {
-    private List<Note> notes;
+public class NotesRecyclerViewAdapter extends ListAdapter<Note, NotesRecyclerViewAdapter.ViewHolder> {
     private INoteListClickListener noteListClickListener;
     private Context context;
 
-    public NotesRecyclerViewAdapter(Context context, List<Note> notes, INoteListClickListener noteListClickListener) {
+    public NotesRecyclerViewAdapter(Context context, INoteListClickListener noteListClickListener) {
+        super(DIFF_CALLBACK);
+
         this.context = context;
-        this.notes = notes;
         this.noteListClickListener = noteListClickListener;
     }
+
+    public static final DiffUtil.ItemCallback<Note> DIFF_CALLBACK =
+        new DiffUtil.ItemCallback<Note>() {
+            @Override
+            public boolean areItemsTheSame(
+                    @NonNull Note oldNote, @NonNull Note newNote) {
+                // User properties may have changed if reloaded from the DB, but ID is fixed
+                return oldNote.getId() == newNote.getId();
+            }
+            @Override
+            public boolean areContentsTheSame(
+                    @NonNull Note oldNote, @NonNull Note newNote) {
+                // NOTE: if you use equals, your object must properly override Object#equals()
+                // Incorrectly returning false here will result in too many animations.
+                return oldNote.equals(newNote);
+            }
+        };
 
     @NonNull
     @Override
@@ -48,7 +67,7 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<NotesRecycler
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         //get note
-        Note note = notes.get(position);
+        Note note = getItem(position);
 
         //show data to layout
         holder.listItemTitle.setText(note.getTitle());
@@ -126,11 +145,6 @@ public class NotesRecyclerViewAdapter extends RecyclerView.Adapter<NotesRecycler
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.playTogether(content, checkIconX, checkIconY, rotateIcon);
         animatorSet.start();
-    }
-
-    @Override
-    public int getItemCount() {
-        return notes.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {

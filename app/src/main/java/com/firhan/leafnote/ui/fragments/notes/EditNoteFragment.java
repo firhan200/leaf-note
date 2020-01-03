@@ -59,6 +59,8 @@ public class EditNoteFragment extends DaggerFragment implements View.OnClickList
 
         //show keyboard
         KeyboardHelper.showSoftKeyboard(getActivity());
+
+        //observe
     }
 
     private void initIds(View view){
